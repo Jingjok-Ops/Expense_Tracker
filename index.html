@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
+    <title>FinFlow - แอพบันทึกรายรับรายจ่ายพรีเมียม</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Sarabun:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=73">
+
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FinFlow">
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=73">
+</head>
+
+<body>
+    <div class="app-background-glow"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <img src="images/cute_orange_cat.png?v=22" class="logo-cat-img" alt="Logo Cat">
+                <span class="logo-icon">📊</span>
+                <h1>FIN<span>FLOW</span></h1>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="icon-btn" title="เปลี่ยนโหมดสี">
+                    <svg class="sun-icon" viewBox="0 0 24 24" width="22" height="22">
+                        <path fill="currentColor"
+                             d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
+                    </svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" width="22" height="22" style="display: none;">
+                        <path fill="currentColor"
+                             d="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
+                    </svg>
+                    <img class="cat-toggle-img" src="images/cute_kitty_orange.png?v=73" style="display: none; width: 28px; height: 28px; object-fit: contain;" alt="Cat Mode">
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Menu -->
+        <nav class="app-nav">
+            <button id="tab-home" class="nav-tab">
+                <img src="images/cute_orange_cat.png?v=22" class="nav-cat-img" alt="Home Cat">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-text">หน้าแรก</span>
+            </button>
+            <button id="tab-add" class="nav-tab">
+                <img src="images/cute_cat_coin.png?v=22" class="nav-cat-img" alt="Add Cat">
+                <span class="tab-icon">✍️</span>
+                <span class="tab-text">บันทึกรายการ</span>
+            </button>
+            <button id="tab-reports" class="nav-tab active">
+                <img src="images/cute_cat_reports.png?v=22" class="nav-cat-img" alt="Reports Cat">
+                <span class="tab-icon">📊</span>
+                <span class="tab-text">รายงาน</span>
+            </button>
+        </nav>
+
+        <!-- Tab 1: Home View (Dashboard summary, category bars & transactions list) -->
+        <main id="view-home" class="tab-view main-layout" style="display: none;">
+            <!-- Left Column: Summary Info -->
+            <section class="left-panel">
+                <!-- Dashboard Cards -->
+                <div class="dashboard-cards">
+                    <!-- Net Balance Card -->
+                    <div class="dashboard-card balance-card glass-panel">
+                        <div class="card-header">ยอดเงินคงเหลือทั้งหมด</div>
+                        <div class="card-value" id="net-balance">฿ 0.00</div>
+                        <div class="card-footer" id="net-balance-footer">
+                            <span class="trend-icon">💼</span> กระเป๋าเงินทั้งหมด
+                        </div>
+                    </div>
+
+                    <!-- Income & Expense Split -->
+                    <div class="split-cards">
+                        <div class="dashboard-card income-card glass-panel">
+                            <div class="card-header">รายรับทั้งหมด</div>
+                            <div class="card-value" id="total-income">฿ 0.00</div>
+                        </div>
+                        <div class="dashboard-card expense-card glass-panel">
+                            <div class="card-header">รายจ่ายทั้งหมด</div>
+                            <div class="card-value" id="total-expense">฿ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accounts & Wallets Section -->
+                <div class="wallets-section glass-panel">
+                    <div class="wallets-header"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600;">💼 บัญชี &
+                            กระเป๋าเงินของคุณ</h3>
+                        <button id="add-wallet-btn" class="shortcut-btn active"
+                            style="font-size: 0.82rem; padding: 0.4rem 0.8rem; margin: 0;">+ เพิ่มกระเป๋า</button>
+                    </div>
+                    <div id="wallets-container" class="wallets-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.85rem;">
+                        <!-- Populate dynamically -->
+                    </div>
+                </div>
+
+
+            </section>
+
+            <!-- Right Column: Transactions list -->
+            <section class="right-panel">
+                <!-- Transaction List & Filter Section -->
+                <div class="transactions-section glass-panel">
+                    <div class="section-header">
+                        <h3>🕒 รายการธุรกรรม</h3>
+                        <div class="filters-container">
+                            <!-- Date Filter Select/Picker -->
+                            <div class="date-filter-wrapper">
+                                <input type="text" id="filter-date" placeholder="ค้นหาวันที่"
+                                    onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'"
+                                    class="styled-select filter-select date-picker-input" title="กรองตามวันที่">
+                                <button id="reset-date-btn" class="reset-date-btn" style="display: none;"
+                                    title="แสดงทั้งหมด">✕</button>
+                            </div>
+
+                            <!-- Filter Type Select -->
+                            <select id="filter-type" class="styled-select filter-select">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="expense">เฉพาะรายจ่าย</option>
+                                <option value="income">เฉพาะรายรับ</option>
+                            </select>
+
+                            <!-- Search Input -->
+                            <div class="search-wrapper">
+                                <input type="text" id="search-note" placeholder="ค้นหาบันทึก...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction List -->
+                    <div class="transactions-list-container">
+                        <ul id="transactions-list">
+                            <!-- Populate dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Tab 2: Add View (Quick Add Form Sheet) -->
+        <section id="view-add" class="tab-view add-transaction-layout" style="display: none;">
+            <div class="add-transaction-section glass-panel centered-form-card">
+                <h3 id="form-title">✍️ บันทึกรายการใหม่</h3>
+                <form id="transaction-form" novalidate>
+                    <input type="hidden" id="edit-id">
+                    <!-- Form Switch Type -->
+                    <div class="type-selector premium-3-way">
+                        <input type="radio" id="type-expense" name="type" value="expense" checked
+                            class="visually-hidden">
+                        <label for="type-expense" class="type-label expense">
+                            <span class="type-dot"></span> รายจ่าย
+                        </label>
+
+                        <input type="radio" id="type-income" name="type" value="income" class="visually-hidden">
+                        <label for="type-income" class="type-label income">
+                            <span class="type-dot"></span> รายรับ
+                        </label>
+
+                        <input type="radio" id="type-transfer" name="type" value="transfer" class="visually-hidden">
+                        <label for="type-transfer" class="type-label transfer">
+                            <span class="type-dot"></span> โอนเงิน
+                        </label>
+                    </div>
+
+                    <!-- Amount Input -->
+                    <div class="form-group">
+                        <label for="amount">จำนวนเงิน (บาท) <span class="required">*</span></label>
+                        <div class="input-wrapper amount-wrapper">
+                            <span class="currency-symbol">฿</span>
+                            <input type="text" id="amount" name="amount" placeholder="0.00"
+                                inputmode="decimal" required>
+                        </div>
+                        <span class="error-msg" id="amount-error">กรุณากรอกจำนวนเงินให้ถูกต้อง (มากกว่า 0)</span>
+                    </div>
+
+                    <!-- Wallet Selection (Income/Expense vs Transfer) -->
+                    <div class="form-group" id="single-wallet-group">
+                        <label for="transaction-wallet" id="wallet-select-label">จ่ายจากกระเป๋าเงิน <span
+                                class="required">*</span></label>
+                        <select id="transaction-wallet" class="styled-select" required>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-row-2" id="transfer-wallets-group" style="display: none; margin-bottom: 1.25rem;">
+                        <div class="form-group">
+                            <label for="transfer-from-wallet">โอนจากกระเป๋าเงิน <span class="required">*</span></label>
+                            <select id="transfer-from-wallet" class="styled-select">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-to-wallet">ไปยังกระเป๋าเงิน <span class="required">*</span></label>
+                            <select id="transfer-to-wallet" class="styled-select">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <!-- Category Input -->
+                        <div class="form-group" id="category-group">
+                            <label for="category">หมวดหมู่ <span class="required">*</span></label>
+                            <select id="category" name="category" class="styled-select" required>
+                                <!-- Options populated dynamically based on selection -->
+                            </select>
+                        </div>
+
+                        <!-- Date Input with Shortcuts -->
+                        <div class="form-group">
+                            <label for="date">วันที่ทำรายการ <span class="required">*</span></label>
+                            <div class="date-shortcuts">
+                                <button type="button" id="btn-date-today" class="shortcut-btn active">วันนี้</button>
+                                <button type="button" id="btn-date-yesterday" class="shortcut-btn">เมื่อวาน</button>
+                            </div>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                    </div>
+
+                    <!-- Note Input -->
+                    <div class="form-group">
+                        <label for="note">บันทึกเพิ่มเติม (ตัวเลือก)</label>
+                        <input type="text" id="note" name="note" placeholder="เช่น ค่าข้าวเที่ยง, เงินเดือนออก...">
+                    </div>
+
+                    <div class="form-actions" style="display: flex; gap: 0.75rem; width: 100%; margin-top: 1.5rem;">
+                        <button type="submit" id="submit-btn" class="action-btn primary" style="flex: 2; margin: 0;">
+                            ✨ บันทึกรายการ
+                        </button>
+                        <button type="button" id="cancel-edit-btn" class="action-btn secondary" style="flex: 1; margin: 0; display: none;">
+                            ยกเลิก
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Tab 3: Reports & Settings View -->
+        <section id="view-reports" class="tab-view active analytics-layout">
+            <!-- Left Panel: Large Donut Chart -->
+            <div class="analytics-chart-panel glass-panel">
+                <div class="analytics-header">
+                    <h2>📊 วิเคราะห์สัดส่วนรายรับรายจ่าย</h2>
+                    <div class="active-wallet-select-container">
+                        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-right: 0.5rem;">กระเป๋าเงิน:</span>
+                        <select id="analytics-active-wallet-select" class="active-wallet-select-dropdown">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="analytics-controls">
+                        <!-- Toggle Switch for Income vs Expense -->
+                        <div class="chart-type-selector">
+                            <input type="radio" id="chart-type-expense" name="chart-type" value="expense" checked
+                                class="visually-hidden">
+                            <label for="chart-type-expense" class="chart-type-label expense">
+                                <span class="type-dot"></span> วิเคราะห์รายจ่าย
+                            </label>
+
+                            <input type="radio" id="chart-type-income" name="chart-type" value="income"
+                                class="visually-hidden">
+                            <label for="chart-type-income" class="chart-type-label income">
+                                <span class="type-dot"></span> วิเคราะห์รายรับ
+                            </label>
+                        </div>
+
+                        <!-- Toggle Switch for Timeframe (Day / Week / Month / Year) -->
+                        <div class="chart-timeframe-selector">
+                            <input type="radio" id="timeframe-day" name="timeframe" value="day" class="visually-hidden">
+                            <label for="timeframe-day" class="timeframe-label">วัน</label>
+
+                            <input type="radio" id="timeframe-week" name="timeframe" value="week"
+                                class="visually-hidden">
+                            <label for="timeframe-week" class="timeframe-label">สัปดาห์</label>
+
+                            <input type="radio" id="timeframe-month" name="timeframe" value="month" checked
+                                class="visually-hidden">
+                            <label for="timeframe-month" class="timeframe-label">เดือน</label>
+
+                            <input type="radio" id="timeframe-year" name="timeframe" value="year"
+                                class="visually-hidden">
+                            <label for="timeframe-year" class="timeframe-label">ปี</label>
+                        </div>
+
+                        <!-- Computed Date Range display with navigation arrows and calendar picker -->
+                        <div class="analytics-date-navigator">
+                            <button type="button" id="analytics-prev-btn" class="nav-arrow-btn" title="ช่วงเวลาก่อนหน้า">◀</button>
+                            <div class="analytics-calendar-wrapper" style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                <span id="analytics-date-range" class="analytics-date-range" style="margin: 0; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); border: 1px dashed var(--border-color); background: rgba(255, 255, 255, 0.02); transition: all var(--transition-fast);">📅 ...</span>
+                                <input type="date" id="analytics-date-picker" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;" title="เลือกวันที่จากปฏิทิน">
+                            </div>
+                            <button type="button" id="analytics-next-btn" class="nav-arrow-btn" title="ช่วงเวลาถัดไป">▶</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="chart-wrapper">
+                    <div class="canvas-container">
+                        <canvas id="donut-chart"></canvas>
+                        <!-- Perfect HTML Centered Text Overlay -->
+                        <div id="chart-center-overlay" class="chart-center-overlay">
+                            <div class="chart-center-label" id="chart-center-label">รวมรายจ่าย</div>
+                            <div class="chart-center-value" id="chart-center-value">฿ 0.00</div>
+                        </div>
+                    </div>
+                    <div id="chart-empty-state" class="empty-state" style="display: none;">
+                        <p class="empty-state-icon">📊</p>
+                        <p>ยังไม่มีข้อมูลธุรกรรมสำหรับประเภทนี้</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Summary card & DB Settings -->
+            <div class="analytics-info-panel">
+                <!-- Total card -->
+                <div class="summary-total-card glass-panel">
+                    <span class="summary-total-label" id="summary-total-title">ยอดรวมรายจ่ายทั้งหมด</span>
+                    <h3 class="summary-total-value" id="summary-total-value">฿ 0.00</h3>
+                </div>
+
+                <!-- Legend Details -->
+                <div class="legend-card glass-panel" style="padding: 1.5rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+                    <h3
+                        style="margin-bottom: 1rem; font-family: var(--font-heading); font-size: 1.15rem; font-weight:600;">
+                        🏷️ รายละเอียดแยกตามหมวดหมู่</h3>
+                    <div class="chart-legend-container" id="chart-legend-list">
+                        <!-- Dynamically populated legends -->
+                    </div>
+                </div>
+
+                <!-- Timeframe Comparison Section -->
+                <div class="comparison-section glass-panel" style="margin-bottom: 1.5rem;">
+                    <div class="comparison-header">
+                        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 600; margin: 0;">📊 เปรียบเทียบยอดรายช่วงเวลา</h3>
+
+                    </div>
+
+                    <!-- Screen Time Summary Header -->
+                    <div class="comp-summary-header">
+                        <div class="comp-summary-title" id="comp-summary-title">เฉลี่ยรายเดือน</div>
+                        <div class="comp-summary-value" id="comp-summary-value">฿ 0.00</div>
+                        <div class="comp-summary-change" id="comp-summary-change">—</div>
+                    </div>
+                    
+                    <!-- Comparison Bar Chart Empty State -->
+                    <div id="comp-chart-empty-state" class="empty-state" style="display: none; padding: 2.5rem 1rem;">
+                        <p class="empty-state-icon">📊</p>
+                        <p>ยังไม่มีข้อมูลเปรียบเทียบในช่วงเวลานี้</p>
+                    </div>
+
+                    <!-- Comparison Bar Chart Canvas Scrollable Wrapper -->
+                    <div class="comp-chart-scroll-viewport" id="comp-chart-scroll-viewport">
+                        <div class="comp-chart-scroll-content">
+                            <canvas id="comparison-bar-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup & Settings Card -->
+                <div class="settings-card glass-panel">
+                    <h3>⚙️ การจัดการและฐานข้อมูล</h3>
+
+                    <!-- DB Status Badge -->
+                    <div class="db-status-badge">
+                        <span class="db-status-dot"></span>
+                        <span id="db-status-text">กำลังเชื่อมต่อฐานข้อมูล...</span>
+                    </div>
+
+                    <p class="settings-desc">ข้อมูลทั้งหมดจะถูกบันทึกไว้ในฐานข้อมูล IndexedDB ในเครื่องนี้อย่างปลอดภัย
+                        รองรับการใช้งานระยะยาวและทำงานแบบออฟไลน์ได้</p>
+
+                    <div class="settings-actions">
+                        <button id="export-btn" class="action-btn secondary">
+                            📥 ส่งออกข้อมูล (JSON)
+                        </button>
+                        <button id="import-btn-trigger" class="action-btn secondary">
+                            📤 นำเข้าข้อมูลสำรอง
+                        </button>
+                        <input type="file" id="import-file-input" accept=".json" class="visually-hidden">
+                    </div>
+
+                    <!-- PWA Install Button -->
+                    <button id="install-pwa-btn" class="action-btn primary install-btn"
+                        style="display: none; margin-top: 1rem;">
+                        📲 ติดตั้งแอพ FinFlow ลงเครื่อง
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Add/Edit Wallet Modal -->
+    <div id="add-wallet-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card glass-panel">
+            <div class="modal-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                <h3 id="wallet-modal-title" style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 600; margin: 0;">💼
+                    เพิ่มกระเป๋าเงินใหม่</h3>
+                <button type="button" id="close-wallet-modal-btn" class="modal-close-btn">✕</button>
+            </div>
+            <form id="wallet-form" novalidate>
+                <input type="hidden" id="edit-wallet-id">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="wallet-name" style="margin-bottom: 0.45rem;">ชื่อกระเป๋าเงิน / บัญชี <span
+                            class="required">*</span></label>
+                    <input type="text" id="wallet-name" placeholder="เช่น บัญชีออมทรัพย์, เงินสด, บัตรเครดิต" required
+                        style="width: 100%; min-height: 48px; padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="wallet-balance" style="margin-bottom: 0.45rem;">ยอดเงินเริ่มต้น (บาท)</label>
+                    <div class="input-wrapper amount-wrapper"
+                        style="position: relative; display: flex; align-items: center;">
+                        <span class="currency-symbol"
+                            style="position: absolute; left: 1.2rem; font-family: var(--font-heading); font-weight: 600; font-size: 1.3rem; color: var(--text-muted);">฿</span>
+                        <input type="text" id="wallet-balance" placeholder="0.00" value="0"
+                            inputmode="decimal"
+                            style="width: 100%; min-height: 48px; padding: 0.75rem 1rem 0.75rem 2.5rem; border-radius: var(--radius-md); font-family: var(--font-heading); font-weight: 800; font-size: 1.4rem;">
+                    </div>
+                </div>
+
+                <div class="form-row-2" style="margin-bottom: 1.25rem;">
+                    <div class="form-group">
+                        <label for="wallet-icon" style="margin-bottom: 0.45rem;">เลือกไอคอน <span
+                                class="required">*</span></label>
+                        <select id="wallet-icon" class="styled-select" required>
+                            <option value="💼">💼 กระเป๋าหลัก</option>
+                            <option value="💵">💵 เงินสด / กระเป๋าตังค์</option>
+                            <option value="🏦">🏦 บัญชีธนาคาร</option>
+                            <option value="💳">💳 บัตรเครดิต / บัญชีออนไลน์</option>
+                            <option value="🐷">🐷 กระปุกออมสิน / เงินออม</option>
+                            <option value="📈">📈 พอร์ตลงทุน / กองทุน</option>
+                            <option value="💰">💰 ถุงเงิน / บัญชีสำรอง</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="wallet-color" style="margin-bottom: 0.45rem;">โทนสีแสดงผล <span
+                                class="required">*</span></label>
+                        <select id="wallet-color" class="styled-select" required>
+                            <option value="#ff8e3c">🟠 สีส้ม (แมวส้ม)</option>
+                            <option value="#3a86c8">🔵 สีน้ำเงิน (ธนาคาร/ความมั่นคง)</option>
+                            <option value="#4caf50">🟢 สีเขียว (กระแสเงินสด/อุดมสมบูรณ์)</option>
+                            <option value="#ff6b8b">🔴 สีชมพู (แฟชั่น/ช็อปปิ้ง)</option>
+                            <option value="#7209b7">🟣 สีม่วง (ความบันเทิง/พิเศษ)</option>
+                            <option value="#ffd700">🟡 สีทอง (ความมั่งคั่ง/ออมทรัพย์)</option>
+                            <option value="#808080">🔘 สีเทา (ทั่วไป)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" id="save-wallet-btn" class="action-btn primary"
+                    style="margin-top: 1.5rem; width: 100%;">
+                    ✨ บันทึกกระเป๋าเงิน
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <span id="toast-message">บันทึกรายการสำเร็จ!</span>
+    </div>
+
+    <script src="chart.js"></script>
+    <script src="db.js"></script>
+    <script src="app.js?v=73"></script>
+</body>
+
+</html>
