@@ -255,6 +255,15 @@ async function initApp() {
                 state.transactions = parsed.transactions || [];
                 if (parsed.wallets && parsed.wallets.length > 0) {
                     state.wallets = parsed.wallets;
+                } else {
+                    state.wallets = [{
+                        id: 'default-wallet',
+                        name: 'กระเป๋าเงินหลัก',
+                        icon: '💼',
+                        color: '#ff8e3c',
+                        initialBalance: 0,
+                        createdAt: Date.now()
+                    }];
                 }
                 state.transactions = state.transactions.map(tx => {
                     if (!tx.walletId && tx.type !== 'transfer') {
@@ -266,6 +275,14 @@ async function initApp() {
                 console.error('Error parsing localStorage state in fallback', e);
             }
         } else {
+            state.wallets = [{
+                id: 'default-wallet',
+                name: 'กระเป๋าเงินหลัก',
+                icon: '💼',
+                color: '#ff8e3c',
+                initialBalance: 0,
+                createdAt: Date.now()
+            }];
             state.transactions = [
                 { id: 'mock-1', type: 'income', amount: 35000, category: 'salary', date: getTodayDateString(-2), note: 'เงินเดือนประจำเดือน', walletId: 'default-wallet' },
                 { id: 'mock-2', type: 'expense', amount: 1200, category: 'food', date: getTodayDateString(-1), note: 'หมูกระทะปาร์ตี้', walletId: 'default-wallet' },
