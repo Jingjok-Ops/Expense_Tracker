@@ -39,6 +39,35 @@
     --radius-lg: 20px;
     --radius-md: 12px;
     --radius-sm: 8px;
+}
+
+:root[data-theme="light"] {
+    --bg-base: #ffffff;
+    --bg-card: rgba(255, 255, 255, 0.8);
+    --bg-card-solid: #f8f9fa;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --border-focus: rgba(0, 0, 0, 0.25);
+    --text-main: #131520;
+    --text-muted: rgba(19, 21, 32, 0.6);
+    --text-muted-more: rgba(19, 21, 32, 0.35);
+    --primary: #7209b7;
+    --primary-rgb: 114, 9, 183;
+    --primary-glow: rgba(114, 9, 183, 0.15);
+    --shadow-main: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme="cat"] {
+    --bg-base: #fffcf7;
+    --bg-card: rgba(255, 255, 255, 0.6);
+    --bg-card-solid: #ffffff;
+    --border-color: rgba(255, 142, 60, 0.2);
+    --border-focus: rgba(255, 142, 60, 0.5);
+    --text-main: #5d4037;
+    --text-muted: rgba(93, 64, 55, 0.65);
+    --text-muted-more: rgba(93, 64, 55, 0.4);
+    
+    --primary: #ff8e3c;
+    --primary-rgb: 255, 142, 60;
     --primary-glow: rgba(255, 142, 60, 0.25);
 
     --income: #4caf50;
@@ -219,7 +248,48 @@ body {
 
 .dashboard-card {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+}
+
+.card-cat-sticker {
+    display: none;
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    object-fit: contain;
+    z-index: 10;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.balance-card .card-cat-sticker {
+    top: -40px;
+    right: 5px;
+}
+
+.income-card .card-cat-sticker {
+    top: -35px;
+    right: -5px;
+    width: 75px;
+    height: 75px;
+}
+
+.expense-card .card-cat-sticker {
+    top: -35px;
+    right: -5px;
+    width: 75px;
+    height: 75px;
+}
+
+:root[data-theme="cat"] .card-cat-sticker {
+    display: block;
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0) translateY(10px) rotate(-10deg); opacity: 0; }
+    100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
 }
 
 .balance-card {

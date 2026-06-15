@@ -11,14 +11,14 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Sarabun:wght@300;400;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=73">
+    <link rel="stylesheet" href="styles.css?v=78">
 
     <!-- PWA Support -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinFlow">
-    <link rel="apple-touch-icon" href="icons/icon-192.png?v=73">
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=74">
 </head>
 
 <body>
@@ -28,7 +28,7 @@
         <!-- Header -->
         <header class="app-header">
             <div class="logo-area">
-                <img src="images/cute_orange_cat.png?v=22" class="logo-cat-img" alt="Logo Cat">
+                <img src="images/cute_orange_cat.png?v=74" class="logo-cat-img" alt="Logo Cat">
                 <span class="logo-icon">📊</span>
                 <h1>FIN<span>FLOW</span></h1>
             </div>
@@ -42,38 +42,39 @@
                         <path fill="currentColor"
                              d="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
                     </svg>
-                    <img class="cat-toggle-img" src="images/cute_kitty_orange.png?v=73" style="display: none; width: 28px; height: 28px; object-fit: contain;" alt="Cat Mode">
+                    <img class="cat-toggle-img" src="images/cute_kitty_orange.png?v=74" style="display: none; width: 28px; height: 28px; object-fit: contain;" alt="Cat Mode">
                 </button>
             </div>
         </header>
 
         <!-- Navigation Menu -->
         <nav class="app-nav">
-            <button id="tab-home" class="nav-tab">
-                <img src="images/cute_orange_cat.png?v=22" class="nav-cat-img" alt="Home Cat">
+            <button id="tab-home" class="nav-tab active">
+                <img src="images/cute_orange_cat.png?v=78" class="nav-cat-img" alt="Home Cat">
                 <span class="tab-icon">🏠</span>
                 <span class="tab-text">หน้าแรก</span>
             </button>
             <button id="tab-add" class="nav-tab">
-                <img src="images/cute_cat_coin.png?v=22" class="nav-cat-img" alt="Add Cat">
+                <img src="images/cute_cat_coin.png?v=78" class="nav-cat-img" alt="Add Cat">
                 <span class="tab-icon">✍️</span>
                 <span class="tab-text">บันทึกรายการ</span>
             </button>
-            <button id="tab-reports" class="nav-tab active">
-                <img src="images/cute_cat_reports.png?v=22" class="nav-cat-img" alt="Reports Cat">
+            <button id="tab-reports" class="nav-tab">
+                <img src="images/cute_cat_reports.png?v=78" class="nav-cat-img" alt="Reports Cat">
                 <span class="tab-icon">📊</span>
                 <span class="tab-text">รายงาน</span>
             </button>
         </nav>
 
         <!-- Tab 1: Home View (Dashboard summary, category bars & transactions list) -->
-        <main id="view-home" class="tab-view main-layout" style="display: none;">
+        <main id="view-home" class="tab-view active main-layout">
             <!-- Left Column: Summary Info -->
             <section class="left-panel">
                 <!-- Dashboard Cards -->
                 <div class="dashboard-cards">
                     <!-- Net Balance Card -->
                     <div class="dashboard-card balance-card glass-panel">
+                        <img src="images/cute_orange_cat.png?v=77" class="card-cat-sticker" alt="Cat Sticker">
                         <div class="card-header">ยอดเงินคงเหลือทั้งหมด</div>
                         <div class="card-value" id="net-balance">฿ 0.00</div>
                         <div class="card-footer" id="net-balance-footer">
@@ -84,10 +85,12 @@
                     <!-- Income & Expense Split -->
                     <div class="split-cards">
                         <div class="dashboard-card income-card glass-panel">
+                            <img src="images/cute_cat_coin.png?v=77" class="card-cat-sticker" alt="Cat Coin Sticker">
                             <div class="card-header">รายรับทั้งหมด</div>
                             <div class="card-value" id="total-income">฿ 0.00</div>
                         </div>
                         <div class="dashboard-card expense-card glass-panel">
+                            <img src="images/cute_cat_reports.png?v=77" class="card-cat-sticker" alt="Cat Expense Sticker">
                             <div class="card-header">รายจ่ายทั้งหมด</div>
                             <div class="card-value" id="total-expense">฿ 0.00</div>
                         </div>
@@ -251,7 +254,7 @@
         </section>
 
         <!-- Tab 3: Reports & Settings View -->
-        <section id="view-reports" class="tab-view active analytics-layout">
+        <section id="view-reports" class="tab-view analytics-layout">
             <!-- Left Panel: Large Donut Chart -->
             <div class="analytics-chart-panel glass-panel">
                 <div class="analytics-header">
@@ -477,9 +480,9 @@
         <span id="toast-message">บันทึกรายการสำเร็จ!</span>
     </div>
 
-    <script src="chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="db.js"></script>
-    <script src="app.js?v=73"></script>
+    <script src="app.js?v=74"></script>
 </body>
 
 </html>
