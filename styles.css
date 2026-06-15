@@ -1850,68 +1850,7 @@ select.styled-select option {
     opacity: 0.35;
 }
 
-/* Peaking Cat Sticker on Balance Card */
-[data-theme="cat"] .balance-card {
-    position: relative;
-    overflow: visible !important;
-}
 
-[data-theme="cat"] .balance-card::before {
-    content: "";
-    position: absolute;
-    top: -32px;
-    /* Align perfectly with income/expense sticker positions */
-    right: 8px;
-    width: 65px;
-    height: 50px;
-    background-image: url('images/cute_cat_peaking.png?v=33');
-    background-size: contain;
-    background-position: center bottom;
-    background-repeat: no-repeat;
-    z-index: 10;
-    pointer-events: none;
-}
-
-/* Income & Expense Card Stickers on Dashboard */
-[data-theme="cat"] .income-card {
-    position: relative;
-    overflow: visible !important;
-}
-
-[data-theme="cat"] .income-card::before {
-    content: "";
-    position: absolute;
-    top: -32px;
-    right: 8px; /* Move sticker inward to fit iPhone 11 viewport boundaries */
-    width: 65px;
-    height: 65px;
-    background-image: url('images/cute_cat_income.png?v=22');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: 10;
-    pointer-events: none;
-}
-
-[data-theme="cat"] .expense-card {
-    position: relative;
-    overflow: visible !important;
-}
-
-[data-theme="cat"] .expense-card::before {
-    content: "";
-    position: absolute;
-    top: -32px;
-    right: 8px; /* Move sticker inward to fit iPhone 11 viewport boundaries */
-    width: 65px;
-    height: 65px;
-    background-image: url('images/cute_cat_expense.png?v=22');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: 10;
-    pointer-events: none;
-}
 
 /* Peaking Cat on Add Transaction Form */
 [data-theme="cat"] .centered-form-card {
@@ -1927,7 +1866,7 @@ select.styled-select option {
     right: 20px;
     width: 68px;
     height: 52px;
-    background-image: url('images/cute_cat_peaking.png?v=31');
+    background-image: url('images/account_cat.png?v=88');
     background-size: contain;
     background-position: center bottom;
     background-repeat: no-repeat;
@@ -1969,7 +1908,7 @@ select.styled-select option {
     width: 100px;
     height: 100px;
     margin: 0 auto 0.75rem;
-    background-image: url('images/cute_cat_expense.png?v=22');
+    background-image: url('images/poor_cat.png?v=88');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
