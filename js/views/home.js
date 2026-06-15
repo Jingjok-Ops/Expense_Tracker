@@ -10,24 +10,33 @@ function render() {
 
     const selId = state.selectedWalletId || 'all';
 
+    const homeMonth = state.homeSummaryMonth || new Date().toISOString().substring(0, 7);
+
     if (selId === 'all') {
         let walletInitialSum = 0;
         state.wallets.forEach(w => {
             walletInitialSum += w.initialBalance || 0;
         });
 
+        let allTimeIncome = 0;
+        let allTimeExpense = 0;
+
         state.transactions.forEach(t => {
             if (t.type === 'income') {
-                totalIncome += t.amount;
+                allTimeIncome += t.amount;
+                if (t.date.startsWith(homeMonth)) totalIncome += t.amount;
             } else if (t.type === 'expense') {
-                totalExpense += t.amount;
+                allTimeExpense += t.amount;
+                if (t.date.startsWith(homeMonth)) totalExpense += t.amount;
             }
         });
-        netBalance = walletInitialSum + totalIncome - totalExpense;
+        netBalance = walletInitialSum + allTimeIncome - allTimeExpense;
     } else {
         const wallet = state.wallets.find(w => w.id === selId);
         const initial = wallet ? (wallet.initialBalance || 0) : 0;
         
+        let allTimeWalletIncome = 0;
+        let allTimeWalletExpense = 0;
         let walletIncome = 0;
         let walletExpense = 0;
         let walletTransfersIn = 0;
@@ -35,9 +44,11 @@ function render() {
 
         state.transactions.forEach(t => {
             if (t.type === 'income' && t.walletId === selId) {
-                walletIncome += t.amount;
+                allTimeWalletIncome += t.amount;
+                if (t.date.startsWith(homeMonth)) walletIncome += t.amount;
             } else if (t.type === 'expense' && t.walletId === selId) {
-                walletExpense += t.amount;
+                allTimeWalletExpense += t.amount;
+                if (t.date.startsWith(homeMonth)) walletExpense += t.amount;
             } else if (t.type === 'transfer') {
                 if (t.fromWalletId === selId) {
                     walletTransfersOut += t.amount;
@@ -50,7 +61,7 @@ function render() {
 
         totalIncome = walletIncome;
         totalExpense = walletExpense;
-        netBalance = initial + walletIncome - walletExpense + walletTransfersIn - walletTransfersOut;
+        netBalance = initial + allTimeWalletIncome - allTimeWalletExpense + walletTransfersIn - walletTransfersOut;
     }
 
     // Format currencies

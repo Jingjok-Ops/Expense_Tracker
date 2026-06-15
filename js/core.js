@@ -27,7 +27,8 @@ let state = {
     transactions: [],
     wallets: [],
     theme: 'dark',
-    selectedWalletId: 'all'
+    selectedWalletId: 'all',
+    homeSummaryMonth: new Date().toISOString().substring(0, 7)
 };
 
 // ==========================================
@@ -47,6 +48,7 @@ const cancelEditBtn = document.getElementById('cancel-edit-btn');
 const netBalanceEl = document.getElementById('net-balance');
 const totalIncomeEl = document.getElementById('total-income');
 const totalExpenseEl = document.getElementById('total-expense');
+const homeMonthSelect = document.getElementById('home-month-select');
 
 const transactionsList = document.getElementById('transactions-list');
 
