@@ -1,0 +1,224 @@
+/* ==========================================
+   INPUTS & FORM CONTROLS
+   ========================================== */
+
+.add-transaction-section h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 0; /* Prevent layout overflow inside Grid/Flexbox */
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+label .required {
+    color: var(--expense);
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"],
+select.styled-select {
+    width: 100%;
+    min-height: 48px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    outline: none;
+    transition: all var(--transition-fast);
+}
+
+/* Enforce layout boundaries and appearance reset on date picker inputs */
+input[type="date"] {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+input:hover,
+select.styled-select:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-focus);
+}
+
+input:focus,
+select.styled-select:focus {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* Custom Select Styling */
+select.styled-select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background: rgba(255, 255, 255, 0.03) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat calc(100% - 12px) center / 20px !important;
+    padding-right: 2.5rem;
+}
+
+select.styled-select::-ms-expand {
+    display: none;
+}
+
+:root[data-theme="light"] select.styled-select {
+    background: var(--bg-card-solid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat calc(100% - 12px) center / 20px !important;
+}
+
+/* Input Wrappers & Affixes */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.amount-wrapper .currency-symbol {
+    position: absolute;
+    left: 1.2rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--text-muted);
+}
+
+.amount-wrapper input {
+    padding-left: 2.5rem;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--text-main);
+}
+
+/* Input Form validation styling */
+input:focus:invalid {
+    border-color: var(--expense);
+    box-shadow: 0 0 8px var(--expense-glow);
+}
+
+.error-msg {
+    font-size: 0.8rem;
+    color: var(--expense);
+    display: none;
+    margin-top: 0.1rem;
+}
+
+/* Type Toggle / Radio Switch Selector */
+.type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 6px;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+}
+
+.type-label {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--text-muted);
+}
+
+.type-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* Active Radio States */
+#type-expense:checked~label[for="type-expense"] {
+    background: var(--expense-glow);
+    color: var(--expense);
+    border: 1px solid rgba(var(--expense-rgb), 0.25);
+    text-shadow: 0 0 10px var(--expense-glow);
+}
+
+#type-income:checked~label[for="type-income"] {
+    background: var(--income-glow);
+    color: var(--income);
+    border: 1px solid rgba(var(--income-rgb), 0.25);
+    text-shadow: 0 0 10px var(--income-glow);
+}
+
+/* ==========================================
+   DATE SHORTCUTS (FORM BACKDATING)
+   ========================================== */
+
+.date-shortcuts {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.shortcut-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.shortcut-btn:hover {
+    color: var(--text-main);
+    border-color: var(--border-focus);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="light"] .shortcut-btn {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+:root[data-theme="light"] .shortcut-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.shortcut-btn.active {
+    background: var(--primary-glow) !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+

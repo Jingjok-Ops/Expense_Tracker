@@ -1,0 +1,483 @@
+/* ==========================================
+   ANALYTICS SCREEN LAYOUT
+   ========================================== */
+
+.analytics-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 1.75rem;
+    align-items: start;
+    animation: slideIn var(--transition-normal);
+}
+
+@media (max-width: 992px) {
+    .analytics-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.analytics-chart-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.analytics-header h2 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+/* Donut Chart Wrapper */
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+}
+
+.canvas-container {
+    width: 100%;
+    max-width: 320px;
+    height: 280px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Selector inside Analytics view */
+.analytics-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 340px;
+}
+
+@media (max-width: 600px) {
+    .analytics-controls {
+        max-width: none;
+    }
+}
+
+.chart-type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    width: 100%;
+}
+
+.chart-timeframe-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    width: 100%;
+}
+
+.timeframe-label {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+    color: var(--text-muted);
+}
+
+.timeframe-label:hover {
+    color: var(--text-main);
+}
+
+#timeframe-day:checked~label[for="timeframe-day"],
+#timeframe-week:checked~label[for="timeframe-week"],
+#timeframe-month:checked~label[for="timeframe-month"],
+#timeframe-year:checked~label[for="timeframe-year"] {
+    background: var(--primary-glow);
+    color: var(--primary);
+    border: 1px solid rgba(var(--primary-rgb), 0.25);
+    text-shadow: 0 0 10px var(--primary-glow);
+}
+
+:root[data-theme="cat"] #timeframe-day:checked~label[for="timeframe-day"],
+:root[data-theme="cat"] #timeframe-week:checked~label[for="timeframe-week"],
+:root[data-theme="cat"] #timeframe-month:checked~label[for="timeframe-month"],
+:root[data-theme="cat"] #timeframe-year:checked~label[for="timeframe-year"] {
+    background: rgba(93, 64, 55, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(93, 64, 55, 0.2);
+}
+
+.analytics-date-range {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    font-weight: 600;
+    margin-top: -0.15rem;
+    font-family: var(--font-body);
+}
+
+.chart-type-label {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+    color: var(--text-muted);
+}
+
+#chart-type-expense:checked~label[for="chart-type-expense"] {
+    background: var(--expense-glow);
+    color: var(--expense);
+    border: 1px solid rgba(var(--expense-rgb), 0.25);
+    text-shadow: 0 0 10px var(--expense-glow);
+}
+
+#chart-type-income:checked~label[for="chart-type-income"] {
+    background: var(--income-glow);
+    color: var(--income);
+    border: 1px solid rgba(var(--income-rgb), 0.25);
+    text-shadow: 0 0 10px var(--income-glow);
+}
+
+/* Info Panel Details */
+.analytics-info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.analytics-info-panel h3 {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.summary-total-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+    border-left: 5px solid var(--primary);
+}
+
+.summary-total-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-total-value {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-top: 0.35rem;
+    color: var(--text-main);
+    word-break: break-all;
+}
+
+/* Legend items in chart reports */
+.chart-legend-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Custom Scrollbar for Legend */
+.chart-legend-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chart-legend-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chart-legend-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+}
+
+.chart-legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.01);
+    transition: all var(--transition-fast);
+}
+
+.chart-legend-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--border-focus);
+    transform: translateX(3px);
+}
+
+.legend-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.legend-color-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.legend-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.legend-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.legend-amount {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.legend-percent {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.empty-state-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* ==========================================
+   TIMEFRAME COMPARISON CARDS (REDESIGNED)
+   ========================================== */
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1rem;
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .comparison-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.comparison-card-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 1.1rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.comparison-card-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--text-muted-more);
+}
+
+.comparison-card-item.positive::before {
+    background-color: var(--income);
+}
+
+.comparison-card-item.negative::before {
+    background-color: var(--expense);
+}
+
+.comparison-card-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+}
+
+:root[data-theme="light"] .comparison-card-item {
+    background: rgba(0, 0, 0, 0.01);
+}
+
+:root[data-theme="light"] .comparison-card-item:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.comp-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.comp-card-balance {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0.1rem 0;
+}
+
+.comp-card-balance.positive {
+    color: var(--income);
+    text-shadow: 0 0 10px var(--income-glow);
+}
+
+.comp-card-balance.negative {
+    color: var(--expense);
+    text-shadow: 0 0 10px var(--expense-glow);
+}
+
+.comp-card-split {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 0.5rem;
+    color: var(--text-muted);
+}
+
+.comp-card-split .income {
+    color: var(--income);
+    font-weight: 600;
+}
+
+.comp-card-split .expense {
+    color: var(--expense);
+    font-weight: 600;
+}
+
+/* ==========================================
+   DATE FILTER INPUT & RESET BUTTON
+   ========================================== */
+
+.date-filter-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 150px;
+}
+
+@media (max-width: 600px) {
+    .date-filter-wrapper {
+        width: 100%;
+    }
+}
+
+.date-picker-input {
+    min-height: 40px !important;
+    padding: 0.5rem 2.2rem 0.5rem 0.75rem !important;
+    font-size: 0.88rem !important;
+    cursor: pointer;
+}
+
+.reset-date-btn {
+    position: absolute;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+    z-index: 2;
+}
+
+.reset-date-btn:hover {
+    color: var(--expense);
+    background: var(--expense-glow);
+    border-color: var(--expense);
+}
+
+.modal-close-btn {
+    position: relative;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+    color: var(--expense);
+    background: var(--expense-glow);
+    border-color: var(--expense);
+    transform: rotate(90deg);
+}
+
+/* Global placeholder and select option styling adjustments */
+input::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.85 !important;
+}
+
+select.styled-select:invalid {
+    color: var(--text-muted) !important;
+}
+
+select.styled-select option {
+    color: var(--text-main) !important;
+    background-color: var(--bg-card-solid) !important;
+}
+
