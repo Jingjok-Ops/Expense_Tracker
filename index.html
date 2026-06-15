@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Sarabun:wght@300;400;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=78">
+    <link rel="stylesheet" href="styles.css?v=88">
 
     <!-- PWA Support -->
     <link rel="manifest" href="manifest.json">
@@ -28,7 +28,7 @@
         <!-- Header -->
         <header class="app-header">
             <div class="logo-area">
-                <img src="images/cute_orange_cat.png?v=74" class="logo-cat-img" alt="Logo Cat">
+                <img src="images/face_cat.png?v=88" class="logo-cat-img" alt="Logo Cat">
                 <span class="logo-icon">📊</span>
                 <h1>FIN<span>FLOW</span></h1>
             </div>
@@ -36,13 +36,14 @@
                 <button id="theme-toggle" class="icon-btn" title="เปลี่ยนโหมดสี">
                     <svg class="sun-icon" viewBox="0 0 24 24" width="22" height="22">
                         <path fill="currentColor"
-                             d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
+                            d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
                     </svg>
                     <svg class="moon-icon" viewBox="0 0 24 24" width="22" height="22" style="display: none;">
                         <path fill="currentColor"
-                             d="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
+                            d="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
                     </svg>
-                    <img class="cat-toggle-img" src="images/cute_kitty_orange.png?v=74" style="display: none; width: 28px; height: 28px; object-fit: contain;" alt="Cat Mode">
+                    <img class="cat-toggle-img" src="images/icon_cat.png?v=87"
+                        style="display: none; width: 50px; height: 50px; object-fit: contain; margin-top: -2px;" alt="Cat Mode">
                 </button>
             </div>
         </header>
@@ -50,17 +51,17 @@
         <!-- Navigation Menu -->
         <nav class="app-nav">
             <button id="tab-home" class="nav-tab active">
-                <img src="images/cute_orange_cat.png?v=78" class="nav-cat-img" alt="Home Cat">
+                <img src="images/rich_cat.png?v=79" class="nav-cat-img" alt="Home Cat">
                 <span class="tab-icon">🏠</span>
                 <span class="tab-text">หน้าแรก</span>
             </button>
             <button id="tab-add" class="nav-tab">
-                <img src="images/cute_cat_coin.png?v=78" class="nav-cat-img" alt="Add Cat">
+                <img src="images/account_cat.png?v=85" class="nav-cat-img" alt="Add Cat">
                 <span class="tab-icon">✍️</span>
                 <span class="tab-text">บันทึกรายการ</span>
             </button>
             <button id="tab-reports" class="nav-tab">
-                <img src="images/cute_cat_reports.png?v=78" class="nav-cat-img" alt="Reports Cat">
+                <img src="images/smart_cat.png?v=84" class="nav-cat-img" alt="Reports Cat">
                 <span class="tab-icon">📊</span>
                 <span class="tab-text">รายงาน</span>
             </button>
@@ -74,7 +75,7 @@
                 <div class="dashboard-cards">
                     <!-- Net Balance Card -->
                     <div class="dashboard-card balance-card glass-panel">
-                        <img src="images/cute_orange_cat.png?v=77" class="card-cat-sticker" alt="Cat Sticker">
+                        <img src="images/rich_cat.png?v=79" class="card-cat-sticker" alt="Cat Sticker">
                         <div class="card-header">ยอดเงินคงเหลือทั้งหมด</div>
                         <div class="card-value" id="net-balance">฿ 0.00</div>
                         <div class="card-footer" id="net-balance-footer">
@@ -85,12 +86,13 @@
                     <!-- Income & Expense Split -->
                     <div class="split-cards">
                         <div class="dashboard-card income-card glass-panel">
-                            <img src="images/cute_cat_coin.png?v=77" class="card-cat-sticker" alt="Cat Coin Sticker">
+                            <img src="images/hug_cat.png?v=82" class="card-cat-sticker" alt="Hug Cat Sticker">
                             <div class="card-header">รายรับทั้งหมด</div>
                             <div class="card-value" id="total-income">฿ 0.00</div>
                         </div>
                         <div class="dashboard-card expense-card glass-panel">
-                            <img src="images/cute_cat_reports.png?v=77" class="card-cat-sticker" alt="Cat Expense Sticker">
+                            <img src="images/poor_cat.png?v=83" class="card-cat-sticker"
+                                alt="Poor Cat Sticker">
                             <div class="card-header">รายจ่ายทั้งหมด</div>
                             <div class="card-value" id="total-expense">฿ 0.00</div>
                         </div>
@@ -185,8 +187,8 @@
                         <label for="amount">จำนวนเงิน (บาท) <span class="required">*</span></label>
                         <div class="input-wrapper amount-wrapper">
                             <span class="currency-symbol">฿</span>
-                            <input type="text" id="amount" name="amount" placeholder="0.00"
-                                inputmode="decimal" required>
+                            <input type="text" id="amount" name="amount" placeholder="0.00" inputmode="decimal"
+                                required>
                         </div>
                         <span class="error-msg" id="amount-error">กรุณากรอกจำนวนเงินให้ถูกต้อง (มากกว่า 0)</span>
                     </div>
@@ -245,7 +247,8 @@
                         <button type="submit" id="submit-btn" class="action-btn primary" style="flex: 2; margin: 0;">
                             ✨ บันทึกรายการ
                         </button>
-                        <button type="button" id="cancel-edit-btn" class="action-btn secondary" style="flex: 1; margin: 0; display: none;">
+                        <button type="button" id="cancel-edit-btn" class="action-btn secondary"
+                            style="flex: 1; margin: 0; display: none;">
                             ยกเลิก
                         </button>
                     </div>
@@ -260,7 +263,8 @@
                 <div class="analytics-header">
                     <h2>📊 วิเคราะห์สัดส่วนรายรับรายจ่าย</h2>
                     <div class="active-wallet-select-container">
-                        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-right: 0.5rem;">กระเป๋าเงิน:</span>
+                        <span
+                            style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-right: 0.5rem;">กระเป๋าเงิน:</span>
                         <select id="analytics-active-wallet-select" class="active-wallet-select-dropdown">
                             <!-- Populated dynamically -->
                         </select>
@@ -302,12 +306,19 @@
 
                         <!-- Computed Date Range display with navigation arrows and calendar picker -->
                         <div class="analytics-date-navigator">
-                            <button type="button" id="analytics-prev-btn" class="nav-arrow-btn" title="ช่วงเวลาก่อนหน้า">◀</button>
-                            <div class="analytics-calendar-wrapper" style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                                <span id="analytics-date-range" class="analytics-date-range" style="margin: 0; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); border: 1px dashed var(--border-color); background: rgba(255, 255, 255, 0.02); transition: all var(--transition-fast);">📅 ...</span>
-                                <input type="date" id="analytics-date-picker" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;" title="เลือกวันที่จากปฏิทิน">
+                            <button type="button" id="analytics-prev-btn" class="nav-arrow-btn"
+                                title="ช่วงเวลาก่อนหน้า">◀</button>
+                            <div class="analytics-calendar-wrapper"
+                                style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                <span id="analytics-date-range" class="analytics-date-range"
+                                    style="margin: 0; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); border: 1px dashed var(--border-color); background: rgba(255, 255, 255, 0.02); transition: all var(--transition-fast);">📅
+                                    ...</span>
+                                <input type="date" id="analytics-date-picker"
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;"
+                                    title="เลือกวันที่จากปฏิทิน">
                             </div>
-                            <button type="button" id="analytics-next-btn" class="nav-arrow-btn" title="ช่วงเวลาถัดไป">▶</button>
+                            <button type="button" id="analytics-next-btn" class="nav-arrow-btn"
+                                title="ช่วงเวลาถัดไป">▶</button>
                         </div>
                     </div>
                 </div>
@@ -350,7 +361,8 @@
                 <!-- Timeframe Comparison Section -->
                 <div class="comparison-section glass-panel" style="margin-bottom: 1.5rem;">
                     <div class="comparison-header">
-                        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 600; margin: 0;">📊 เปรียบเทียบยอดรายช่วงเวลา</h3>
+                        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 600; margin: 0;">
+                            📊 เปรียบเทียบยอดรายช่วงเวลา</h3>
 
                     </div>
 
@@ -360,7 +372,7 @@
                         <div class="comp-summary-value" id="comp-summary-value">฿ 0.00</div>
                         <div class="comp-summary-change" id="comp-summary-change">—</div>
                     </div>
-                    
+
                     <!-- Comparison Bar Chart Empty State -->
                     <div id="comp-chart-empty-state" class="empty-state" style="display: none; padding: 2.5rem 1rem;">
                         <p class="empty-state-icon">📊</p>
@@ -413,7 +425,8 @@
         <div class="modal-card glass-panel">
             <div class="modal-header"
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
-                <h3 id="wallet-modal-title" style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 600; margin: 0;">💼
+                <h3 id="wallet-modal-title"
+                    style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 600; margin: 0;">💼
                     เพิ่มกระเป๋าเงินใหม่</h3>
                 <button type="button" id="close-wallet-modal-btn" class="modal-close-btn">✕</button>
             </div>
@@ -432,8 +445,7 @@
                         style="position: relative; display: flex; align-items: center;">
                         <span class="currency-symbol"
                             style="position: absolute; left: 1.2rem; font-family: var(--font-heading); font-weight: 600; font-size: 1.3rem; color: var(--text-muted);">฿</span>
-                        <input type="text" id="wallet-balance" placeholder="0.00" value="0"
-                            inputmode="decimal"
+                        <input type="text" id="wallet-balance" placeholder="0.00" value="0" inputmode="decimal"
                             style="width: 100%; min-height: 48px; padding: 0.75rem 1rem 0.75rem 2.5rem; border-radius: var(--radius-md); font-family: var(--font-heading); font-weight: 800; font-size: 1.4rem;">
                     </div>
                 </div>

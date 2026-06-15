@@ -264,22 +264,27 @@ body {
 }
 
 .balance-card .card-cat-sticker {
-    top: -40px;
-    right: 5px;
+    top: -55px;
+    right: -10px;
+    width: 120px;
+    height: 120px;
+    mix-blend-mode: normal;
 }
 
 .income-card .card-cat-sticker {
-    top: -35px;
-    right: -5px;
-    width: 75px;
-    height: 75px;
+    top: -45px;
+    right: -10px;
+    width: 100px;
+    height: 100px;
+    mix-blend-mode: normal;
 }
 
 .expense-card .card-cat-sticker {
-    top: -35px;
-    right: -5px;
-    width: 75px;
-    height: 75px;
+    top: -45px;
+    right: -10px;
+    width: 100px;
+    height: 100px;
+    mix-blend-mode: normal;
 }
 
 :root[data-theme="cat"] .card-cat-sticker {
@@ -1938,11 +1943,11 @@ select.styled-select option {
 [data-theme="cat"] .analytics-chart-panel::before {
     content: "";
     position: absolute;
-    bottom: 8px; /* Move sticker inward to fit iPhone 11 viewport boundaries */
-    right: 8px; /* Move sticker inward to fit iPhone 11 viewport boundaries */
-    width: 80px;
-    height: 80px;
-    background-image: url('images/cute_cat_reports.png?v=22');
+    bottom: -10px; /* Move sticker inward to fit iPhone 11 viewport boundaries */
+    right: 0px; /* Move sticker inward to fit iPhone 11 viewport boundaries */
+    width: 90px;
+    height: 90px;
+    background-image: url('images/smart_cat.png?v=84');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -1986,7 +1991,7 @@ select.styled-select option {
     width: 120px;
     height: 120px;
     margin: 0 auto 0.75rem;
-    background-image: url('images/cute_cat_reports.png?v=22');
+    background-image: url('images/smart_cat.png?v=84');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
