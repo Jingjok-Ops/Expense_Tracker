@@ -106,3 +106,14 @@ const clearAllTransactionsDB = () => {
         request.onerror = (e) => reject(e.target.error);
     });
 };
+
+const clearAllWalletsDB = () => {
+    return new Promise((resolve, reject) => {
+        if (!db) return reject('DB not initialized');
+        const transaction = db.transaction(['wallets'], 'readwrite');
+        const store = transaction.objectStore('wallets');
+        const request = store.clear();
+        request.onsuccess = () => resolve();
+        request.onerror = (e) => reject(e.target.error);
+    });
+};

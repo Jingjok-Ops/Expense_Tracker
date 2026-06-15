@@ -1366,7 +1366,7 @@ body {
 
     /* Legend List Sizing */
     .chart-legend-container {
-        max-height: 220px !important;
+        max-height: 350px !important;
     }
 
     .chart-legend-item {

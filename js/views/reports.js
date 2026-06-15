@@ -254,10 +254,10 @@ function updateAnalyticsChart() {
              maintainAspectRatio: false,
              layout: {
                  padding: {
-                     left: window.innerWidth <= 600 ? 20 : 28,
-                     right: window.innerWidth <= 600 ? 20 : 28,
-                     top: window.innerWidth <= 600 ? 20 : 28,
-                     bottom: window.innerWidth <= 600 ? 24 : 28
+                     left: window.innerWidth <= 600 ? 35 : 45,
+                     right: window.innerWidth <= 600 ? 35 : 45,
+                     top: window.innerWidth <= 600 ? 35 : 45,
+                     bottom: window.innerWidth <= 600 ? 35 : 45
                  }
              },
              plugins: {
