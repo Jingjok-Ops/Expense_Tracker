@@ -26,7 +26,7 @@ const CATEGORIES = {
 let state = {
     transactions: [],
     wallets: [],
-    theme: 'dark',
+    theme: 'cat',
     selectedWalletId: 'all',
     homeSummaryMonth: new Date().toISOString().substring(0, 7)
 };
@@ -107,17 +107,17 @@ async function initApp() {
         if (savedState) {
             try {
                 const parsed = JSON.parse(savedState);
-                state.theme = parsed.theme || 'dark';
+                state.theme = parsed.theme || 'cat';
             } catch (e) {
-                state.theme = 'dark';
+                state.theme = 'cat';
             }
         } else {
-            state.theme = 'dark';
+            state.theme = 'cat';
         }
     }
     
     // Set theme on startup
-    document.documentElement.setAttribute('data-theme', state.theme || 'dark');
+    document.documentElement.setAttribute('data-theme', state.theme || 'cat');
     updateThemeToggleIcons();
 
     // Default form date to today

@@ -155,6 +155,14 @@ function setupEventListeners() {
         tabReportsBtn.addEventListener('click', () => switchTab('reports'));
     }
 
+    // Refresh app button (Cat logo)
+    const headerRefreshBtn = document.getElementById('header-refresh-btn');
+    if (headerRefreshBtn) {
+        headerRefreshBtn.addEventListener('click', () => {
+            window.location.reload();
+        });
+    }
+
     // Analytics type toggle switch listener
     document.querySelectorAll('input[name="chart-type"]').forEach(radio => {
         radio.addEventListener('change', (e) => {

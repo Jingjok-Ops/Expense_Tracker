@@ -3,17 +3,17 @@
   "short_name": "FinFlow",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#121212",
-  "theme_color": "#1e1e1e",
+  "background_color": "#fffcf7",
+  "theme_color": "#ff8e3c",
   "description": "แอพบันทึกรายรับรายจ่ายพรีเมียม (FinFlow)",
   "icons": [
     {
-      "src": "images/rich_cat.png",
+      "src": "images/app_icon_orange.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "images/rich_cat.png",
+      "src": "images/app_icon_orange.png",
       "sizes": "512x512",
       "type": "image/png"
     }

@@ -2,7 +2,7 @@
 // FINFLOW - SERVICE WORKER FOR OFFLINE CACHING
 // ============================================================================
 
-const CACHE_NAME = 'finflow-cache-v86';
+const CACHE_NAME = 'finflow-cache-v87';
 const ASSETS = [
     './',
     './index.html',

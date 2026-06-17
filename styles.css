@@ -1,10 +1,6 @@
-@import url("styles/views/home.css");
-@import url("styles/views/add.css");
-@import url("styles/views/reports.css");
-
-@import url("styles/views/home.css");
-@import url("styles/views/add.css");
-@import url("styles/views/reports.css");
+@import url("styles/views/home.css?v=102");
+@import url("styles/views/add.css?v=102");
+@import url("styles/views/reports.css?v=102");
 
 /* ==========================================
    DESIGN SYSTEM & VARIABLES

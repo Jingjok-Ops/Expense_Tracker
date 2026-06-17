@@ -37,6 +37,15 @@ function switchTab(tab) {
             updateAnalyticsChart();
         }, 150);
     }
+
+    // Scroll to top with multiple fallbacks for different browsers on all tabs
+    try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+        window.scrollTo(0, 0);
+    }
+    document.body.scrollTop = 0; // For older Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
 
 function getDateRangeForTimeframe(timeframe) {
@@ -151,13 +160,13 @@ function updateAnalyticsChart() {
         // Dynamically scale font size based on character length to prevent text overflowing the inner donut hole
         const len = chartCenterValue.textContent.length;
         if (len > 14) {
-            chartCenterValue.style.fontSize = '0.74rem';
+            chartCenterValue.style.fontSize = '0.85rem';
         } else if (len > 11) {
-            chartCenterValue.style.fontSize = '0.88rem';
-        } else if (len > 8) {
             chartCenterValue.style.fontSize = '1.05rem';
+        } else if (len > 8) {
+            chartCenterValue.style.fontSize = '1.25rem';
         } else {
-            chartCenterValue.style.fontSize = ''; // use CSS default
+            chartCenterValue.style.fontSize = '1.5rem'; // use CSS default or slightly larger
         }
     }
 
@@ -355,7 +364,7 @@ function updateAnalyticsChart() {
                              }
 
                              ctx.fillStyle = state.theme === 'dark' ? '#e2e8f0' : (state.theme === 'cat' ? '#5d4037' : '#2d3748');
-                             ctx.font = '600 10px Sarabun, Outfit, sans-serif';
+                             ctx.font = '600 12px Sarabun, Outfit, sans-serif';
                              
                              // Align text based on its position around the circle to prevent overlap
                              const cos = Math.cos(halfAngle);
@@ -680,7 +689,7 @@ function updateComparisonChart() {
                         align: 'center',
                         font: {
                             family: 'Sarabun, sans-serif',
-                            size: 9
+                            size: 11
                         }
                     }
                 },
@@ -703,7 +712,7 @@ function updateComparisonChart() {
                         textAlign: 'right',
                         font: {
                             family: 'Outfit, Sarabun, sans-serif',
-                            size: 9
+                            size: 11
                         },
                         callback: function(value) {
                             if (value === 0) return '0';
@@ -738,7 +747,7 @@ function updateComparisonChart() {
                 
                 // Add a text label "เฉลี่ย: ฿ X,XXX" above the line on the right side
                 ctx.fillStyle = state.theme === 'dark' ? '#e2e8f0' : '#4a5568';
-                ctx.font = '600 9px Sarabun, Outfit, sans-serif';
+                ctx.font = '600 11px Sarabun, Outfit, sans-serif';
                 ctx.textAlign = 'right';
                 ctx.textBaseline = 'bottom';
                 const formattedAvg = Math.round(avgVal).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
