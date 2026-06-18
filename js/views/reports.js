@@ -323,7 +323,7 @@ function updateAnalyticsChart(skipComparisonUpdate = false) {
 
 
                             // Only show if the slice is large enough (> 1%)
-                            if (parseFloat(percent) < 1.0) return;
+                            if (percentFloat < 1.0) return;
 
                             // Get animating properties safely
                             const props = element.getProps(['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius'], true);
