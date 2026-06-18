@@ -17,11 +17,11 @@ function switchTab(tab) {
 
     const tabs = [tabHomeBtn, tabAddBtn, tabReportsBtn];
     const views = [viewHome, viewAdd, viewReports];
-    
+
     // Remove active status from all tabs and views
     tabs.forEach(t => t && t.classList.remove('active'));
     views.forEach(v => v && v.classList.remove('active'));
-    
+
     // Activate the requested tab and view
     if (tab === 'home') {
         if (tabHomeBtn) tabHomeBtn.classList.add('active');
@@ -90,7 +90,14 @@ function updateAnalyticsChart() {
 
     const type = analyticsState.activeType;
     const timeframe = analyticsState.activeTimeframe || 'month';
-    const { start, end, label: rangeLabel } = getDateRangeForTimeframe(timeframe);
+    let { start, end, label: rangeLabel } = getDateRangeForTimeframe(timeframe);
+
+    // Apply specific bar override if a user clicked a bar in the comparison chart
+    if (analyticsState.overrideDateRange) {
+        start = analyticsState.overrideDateRange.start;
+        end = analyticsState.overrideDateRange.end;
+        rangeLabel = analyticsState.overrideDateRange.label;
+    }
 
     // Display range label in the UI
     const rangeDisplay = document.getElementById('analytics-date-range');
@@ -175,7 +182,7 @@ function updateAnalyticsChart() {
     if (total === 0) {
         if (emptyState) emptyState.style.display = 'block';
         if (canvasContainer) canvasContainer.style.display = 'none';
-        
+
         if (analyticsState.chartInstance) {
             analyticsState.chartInstance.destroy();
             analyticsState.chartInstance = null;
@@ -248,114 +255,114 @@ function updateAnalyticsChart() {
                 borderWidth: 2,
                 hoverOffset: 6
             }]
-         },
-         options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             layout: {
-                 padding: {
-                     left: window.innerWidth <= 600 ? 35 : 45,
-                     right: window.innerWidth <= 600 ? 35 : 45,
-                     top: window.innerWidth <= 600 ? 35 : 45,
-                     bottom: window.innerWidth <= 600 ? 35 : 45
-                 }
-             },
-             plugins: {
-                 legend: {
-                     display: false
-                 },
-                 tooltip: {
-                     backgroundColor: tooltipBg,
-                     titleColor: tooltipTextColor,
-                     bodyColor: tooltipTextColor,
-                     borderColor: tooltipBorderColor,
-                     borderWidth: 1,
-                     padding: 10,
-                     boxPadding: 4,
-                     callbacks: {
-                         label: function(context) {
-                             const val = context.raw || 0;
-                             const pct = ((val / total) * 100).toFixed(1);
-                             return ` ${formatter.format(val)} (${pct}%)`;
-                         }
-                     }
-                 }
-             },
-             cutout: '66%',
-             animation: {
-                 duration: 0
-             }
-         },
-                   plugins: [{
-             id: 'slicePercentage',
-             afterDatasetsDraw(chart) {
-                 try {
-                     const { ctx } = chart;
-                     ctx.save();
-                     chart.data.datasets.forEach((dataset, i) => {
-                         const meta = chart.getDatasetMeta(i);
-                         meta.data.forEach((element, index) => {
-                             const dataVal = dataset.data[index];
-                             const totalVal = dataset.data.reduce((a, b) => a + b, 0);
-                             if (totalVal === 0) return;
-                             const percent = ((dataVal / totalVal) * 100).toFixed(1);
-                             
-                             // Only show if the slice is large enough (> 1%)
-                             if (parseFloat(percent) < 1.0) return;
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: window.innerWidth <= 600 ? 35 : 45,
+                    right: window.innerWidth <= 600 ? 35 : 45,
+                    top: window.innerWidth <= 600 ? 35 : 45,
+                    bottom: window.innerWidth <= 600 ? 35 : 45
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: tooltipBg,
+                    titleColor: tooltipTextColor,
+                    bodyColor: tooltipTextColor,
+                    borderColor: tooltipBorderColor,
+                    borderWidth: 1,
+                    padding: 10,
+                    boxPadding: 4,
+                    callbacks: {
+                        label: function (context) {
+                            const val = context.raw || 0;
+                            const pct = ((val / total) * 100).toFixed(1);
+                            return ` ${formatter.format(val)} (${pct}%)`;
+                        }
+                    }
+                }
+            },
+            cutout: '66%',
+            animation: {
+                duration: 0
+            }
+        },
+        plugins: [{
+            id: 'slicePercentage',
+            afterDatasetsDraw(chart) {
+                try {
+                    const { ctx } = chart;
+                    ctx.save();
+                    chart.data.datasets.forEach((dataset, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach((element, index) => {
+                            const dataVal = dataset.data[index];
+                            const totalVal = dataset.data.reduce((a, b) => a + b, 0);
+                            if (totalVal === 0) return;
+                            const percent = ((dataVal / totalVal) * 100).toFixed(1);
 
-                             // Get animating properties safely
-                             const props = element.getProps(['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius'], true);
-                             const { x, y, startAngle, endAngle, innerRadius, outerRadius } = props || element;
+                            // Only show if the slice is large enough (> 1%)
+                            if (parseFloat(percent) < 1.0) return;
 
-                             if (x === undefined || y === undefined || startAngle === undefined || endAngle === undefined) {
-                                 return;
-                             }
+                            // Get animating properties safely
+                            const props = element.getProps(['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius'], true);
+                            const { x, y, startAngle, endAngle, innerRadius, outerRadius } = props || element;
 
-                             const halfAngle = startAngle + (endAngle - startAngle) / 2;
-                             
-                             // Offset label 15px outside the outer radius
-                             const labelRadius = outerRadius + 15;
-                             const posX = x + Math.cos(halfAngle) * labelRadius;
-                             const posY = y + Math.sin(halfAngle) * labelRadius;
+                            if (x === undefined || y === undefined || startAngle === undefined || endAngle === undefined) {
+                                return;
+                            }
 
-                             ctx.fillStyle = state.theme === 'dark' ? '#e2e8f0' : (state.theme === 'cat' ? '#5d4037' : '#2d3748');
-                             ctx.font = '600 10px Sarabun, Outfit, sans-serif';
-                             
-                             // Align text based on its position around the circle to prevent overlap
-                             const cos = Math.cos(halfAngle);
-                             if (cos > 0.3) {
-                                 ctx.textAlign = 'left';
-                             } else if (cos < -0.3) {
-                                 ctx.textAlign = 'right';
-                             } else {
-                                 ctx.textAlign = 'center';
-                             }
+                            const halfAngle = startAngle + (endAngle - startAngle) / 2;
 
-                             const sin = Math.sin(halfAngle);
-                             if (sin > 0.5) {
-                                 ctx.textBaseline = 'top';
-                             } else if (sin < -0.5) {
-                                 ctx.textBaseline = 'bottom';
-                             } else {
-                                 ctx.textBaseline = 'middle';
-                             }
-                             
-                             // Disable shadow for external text for crisp readability
-                             ctx.shadowColor = 'transparent';
-                             ctx.shadowBlur = 0;
-                             ctx.shadowOffsetX = 0;
-                             ctx.shadowOffsetY = 0;
-                             
-                             ctx.fillText(`${percent}%`, posX, posY);
-                         });
-                     });
-                     ctx.restore();
-                 } catch (err) {
-                     console.error("Chart plugin error:", err);
-                     showToast("❌ เกรดข้อผิดพลาด: " + err.message);
-                 }
-             }
-         }]
+                            // Offset label 15px outside the outer radius
+                            const labelRadius = outerRadius + 15;
+                            const posX = x + Math.cos(halfAngle) * labelRadius;
+                            const posY = y + Math.sin(halfAngle) * labelRadius;
+
+                            ctx.fillStyle = state.theme === 'dark' ? '#e2e8f0' : (state.theme === 'cat' ? '#5d4037' : '#2d3748');
+                            ctx.font = '600 10px Sarabun, Outfit, sans-serif';
+
+                            // Align text based on its position around the circle to prevent overlap
+                            const cos = Math.cos(halfAngle);
+                            if (cos > 0.3) {
+                                ctx.textAlign = 'left';
+                            } else if (cos < -0.3) {
+                                ctx.textAlign = 'right';
+                            } else {
+                                ctx.textAlign = 'center';
+                            }
+
+                            const sin = Math.sin(halfAngle);
+                            if (sin > 0.5) {
+                                ctx.textBaseline = 'top';
+                            } else if (sin < -0.5) {
+                                ctx.textBaseline = 'bottom';
+                            } else {
+                                ctx.textBaseline = 'middle';
+                            }
+
+                            // Disable shadow for external text for crisp readability
+                            ctx.shadowColor = 'transparent';
+                            ctx.shadowBlur = 0;
+                            ctx.shadowOffsetX = 0;
+                            ctx.shadowOffsetY = 0;
+
+                            ctx.fillText(`${percent}%`, posX, posY);
+                        });
+                    });
+                    ctx.restore();
+                } catch (err) {
+                    console.error("Chart plugin error:", err);
+                    showToast("❌ เกรดข้อผิดพลาด: " + err.message);
+                }
+            }
+        }]
     });
 
     // Update Period Comparison Chart & Cards
@@ -389,35 +396,35 @@ function updateComparisonChart() {
             d.setDate(d.getDate() - i);
             const startOfDay = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
             const endOfDay = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
-            
+
             const formatOptions = { day: 'numeric', month: 'short' };
             const formatter = new Intl.DateTimeFormat('th-TH', formatOptions);
             const label = cleanStr(formatter.format(startOfDay));
-            
+
             intervals.push({ label, start: startOfDay, end: endOfDay, total: 0, categories: {} });
         }
     } else if (compTimeframe === 'week') {
         const endDay = end.getDay();
         const diffToMonday = end.getDate() - endDay + (endDay === 0 ? -6 : 1);
         const endMonday = new Date(end.getFullYear(), end.getMonth(), diffToMonday);
-        
+
         const anchorMonday = new Date(endMonday.getTime() + compOffset * 4 * 7 * 24 * 60 * 60 * 1000);
-        
+
         for (let i = 3; i >= 0; i--) {
             const startOfWeek = new Date(anchorMonday.getTime() - i * 7 * 24 * 60 * 60 * 1000);
             startOfWeek.setHours(0, 0, 0, 0);
             const endOfWeek = new Date(startOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
             endOfWeek.setHours(23, 59, 59, 999);
-            
+
             const startDayVal = startOfWeek.getDate();
             const endDayVal = endOfWeek.getDate();
             const startMonthStr = cleanStr(startOfWeek.toLocaleDateString('th-TH', { month: 'short' }));
             const endMonthStr = cleanStr(endOfWeek.toLocaleDateString('th-TH', { month: 'short' }));
-            
-            const label = startMonthStr === endMonthStr 
-                ? `${startDayVal}-${endDayVal} ${startMonthStr}` 
+
+            const label = startMonthStr === endMonthStr
+                ? `${startDayVal}-${endDayVal} ${startMonthStr}`
                 : `${startDayVal} ${startMonthStr}-${endDayVal} ${endMonthStr}`;
-            
+
             intervals.push({ label, start: startOfWeek, end: endOfWeek, total: 0, categories: {} });
         }
     } else if (compTimeframe === 'month') {
@@ -425,11 +432,11 @@ function updateComparisonChart() {
             const targetMonth = end.getMonth() - i + compOffset * 4;
             const startOfMonth = new Date(end.getFullYear(), targetMonth, 1, 0, 0, 0, 0);
             const endOfMonth = new Date(end.getFullYear(), targetMonth + 1, 0, 23, 59, 59, 999);
-            
+
             const formatOptions = { month: 'short', year: '2-digit' };
             const formatter = new Intl.DateTimeFormat('th-TH', formatOptions);
             const label = cleanStr(formatter.format(startOfMonth));
-            
+
             intervals.push({ label, start: startOfMonth, end: endOfMonth, total: 0, categories: {} });
         }
     } else if (compTimeframe === 'year') {
@@ -438,9 +445,9 @@ function updateComparisonChart() {
             const targetYear = anchorYear - i;
             const startOfYear = new Date(targetYear, 0, 1, 0, 0, 0, 0);
             const endOfYear = new Date(targetYear, 11, 31, 23, 59, 59, 999);
-            
+
             const label = `${targetYear + 543}`; // Buddhist Era
-            
+
             intervals.push({ label, start: startOfYear, end: endOfYear, total: 0, categories: {} });
         }
     }
@@ -458,7 +465,7 @@ function updateComparisonChart() {
     state.transactions.forEach(t => {
         if (t.type !== type) return;
         if (selId !== 'all' && t.walletId !== selId) return;
-        
+
         const txDate = new Date(t.date);
         for (const interval of intervals) {
             if (txDate >= interval.start && txDate <= interval.end) {
@@ -484,7 +491,7 @@ function updateComparisonChart() {
         else if (compTimeframe === 'week') titleText = `เฉลี่ยรายสัปดาห์ (${type === 'income' ? 'รายรับ' : 'รายจ่าย'})`;
         else if (compTimeframe === 'month') titleText = `เฉลี่ยรายเดือน (${type === 'income' ? 'รายรับ' : 'รายจ่าย'})`;
         else if (compTimeframe === 'year') titleText = `เฉลี่ยรายปี (${type === 'income' ? 'รายรับ' : 'รายจ่าย'})`;
-        
+
         if (compOffset < 0) {
             titleText += ` (ย้อนหลัง ${Math.abs(compOffset)} หน้า)`;
         }
@@ -527,7 +534,7 @@ function updateComparisonChart() {
     if (summaryChangeEl) {
         const lastVal = intervals[intervals.length - 1].total;
         const prevVal = intervals.length > 1 ? intervals[intervals.length - 2].total : 0;
-        
+
         let changePercent = 0;
         if (prevVal > 0) {
             changePercent = ((lastVal - prevVal) / prevVal) * 100;
@@ -587,6 +594,9 @@ function updateComparisonChart() {
         };
     });
 
+    let hideTooltipIndex = null;
+    let lastHoverIndex = null;
+
     const ctx = compCanvas.getContext('2d');
     analyticsState.comparisonChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -597,6 +607,45 @@ function updateComparisonChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            onHover: function(e, elements, chart) {
+                if (elements.length > 0) {
+                    const currentIdx = elements[0].index;
+                    if (lastHoverIndex !== currentIdx) {
+                        hideTooltipIndex = null;
+                        lastHoverIndex = currentIdx;
+                    }
+                }
+            },
+            onClick: function(e, elements, chart) {
+                if (elements.length > 0) {
+                    const currentIdx = elements[0].index;
+                    if (hideTooltipIndex === currentIdx) {
+                        hideTooltipIndex = null;
+                        // Clicked again to untoggle -> clear override date
+                        analyticsState.overrideDateRange = null;
+                        updateAnalyticsChart();
+                    } else {
+                        hideTooltipIndex = currentIdx;
+                        // Clicked a new bar -> set override date and update donut
+                        const selectedInterval = intervals[currentIdx];
+                        analyticsState.overrideDateRange = {
+                            start: selectedInterval.start,
+                            end: selectedInterval.end,
+                            label: selectedInterval.label
+                        };
+                        updateAnalyticsChart();
+                    }
+                } else {
+                    hideTooltipIndex = null;
+                    analyticsState.overrideDateRange = null;
+                    updateAnalyticsChart();
+                }
+                chart.update();
+            },
             layout: {
                 padding: {
                     left: 8,
@@ -612,17 +661,29 @@ function updateComparisonChart() {
                 averageLine: {
                     value: average
                 },
-                tooltip: {
+                    tooltip: {
+                    filter: function(tooltipItem) {
+                        return tooltipItem.raw > 0;
+                    },
                     padding: 10,
                     backgroundColor: state.theme === 'dark' ? '#131520' : (state.theme === 'cat' ? '#fffcf7' : '#ffffff'),
                     titleColor: state.theme === 'dark' ? '#ffffff' : (state.theme === 'cat' ? '#5d4037' : '#131520'),
                     bodyColor: state.theme === 'dark' ? '#ffffff' : (state.theme === 'cat' ? '#5d4037' : '#131520'),
                     borderColor: state.theme === 'dark' ? 'rgba(255,255,255,0.08)' : (state.theme === 'cat' ? 'rgba(93,64,55,0.15)' : 'rgba(0,0,0,0.08)'),
                     borderWidth: 1,
+                    footerColor: state.theme === 'dark' ? '#ffffff' : (state.theme === 'cat' ? '#5d4037' : '#131520'),
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             const val = context.raw || 0;
                             return ` ${context.dataset.label}: ฿ ${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(val)}`;
+                        },
+                        footer: function(tooltipItems) {
+                            const dataIndex = tooltipItems[0].dataIndex;
+                            if (intervals && intervals[dataIndex]) {
+                                const total = intervals[dataIndex].total;
+                                return `รวมทั้งแท่ง: ฿ ${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(total)}`;
+                            }
+                            return '';
                         }
                     }
                 }
@@ -669,7 +730,7 @@ function updateComparisonChart() {
                             family: 'Outfit, Sarabun, sans-serif',
                             size: 9
                         },
-                        callback: function(value) {
+                        callback: function (value) {
                             if (value === 0) return '0';
                             // Format clean numbers without currency prefix to avoid any measurement bugs and save space on mobile
                             return Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -680,34 +741,41 @@ function updateComparisonChart() {
         },
         plugins: [{
             id: 'averageLine',
-            afterDraw(chart) {
+            beforeTooltipDraw(chart) {
+                if (chart.tooltip && chart.tooltip.dataPoints && chart.tooltip.dataPoints.length > 0) {
+                    if (chart.tooltip.dataPoints[0].dataIndex === hideTooltipIndex) {
+                        return false; // Cancel tooltip drawing
+                    }
+                }
+            },
+            afterDatasetsDraw(chart) {
                 const pluginOptions = chart.options.plugins.averageLine;
                 if (!pluginOptions || typeof pluginOptions.value !== 'number' || pluginOptions.value <= 0) return;
-                
+
                 const avgVal = pluginOptions.value;
                 const { ctx, chartArea: { left, right }, scales: { y } } = chart;
                 const yPixel = y.getPixelForValue(avgVal);
-                
+
                 if (yPixel < chart.chartArea.top || yPixel > chart.chartArea.bottom) return;
-                
+
                 ctx.save();
                 ctx.strokeStyle = state.theme === 'dark' ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.35)';
                 ctx.lineWidth = 1.5;
                 ctx.setLineDash([5, 5]);
-                
+
                 ctx.beginPath();
                 ctx.moveTo(left, yPixel);
                 ctx.lineTo(right, yPixel);
                 ctx.stroke();
-                
+
                 // Add a text label "เฉลี่ย: ฿ X,XXX" above the line on the right side
                 ctx.fillStyle = state.theme === 'dark' ? '#e2e8f0' : '#4a5568';
-                ctx.font = '600 9px Sarabun, Outfit, sans-serif';
+                ctx.font = '600 12px Sarabun, Outfit, sans-serif';
                 ctx.textAlign = 'right';
                 ctx.textBaseline = 'bottom';
                 const formattedAvg = Math.round(avgVal).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                const text = 'เฉลี่ย ' + formattedAvg + ' บาท';
-                ctx.fillText(text, right - 5, yPixel - 3);
+                const text = 'เฉลี่ย';
+                ctx.fillText(text, right - 30, yPixel - 3);
                 ctx.restore();
             }
         }]

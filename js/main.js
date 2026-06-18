@@ -145,6 +145,7 @@ function setupEventListeners() {
     document.querySelectorAll('input[name="chart-type"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
             analyticsState.activeType = e.target.value;
+            analyticsState.overrideDateRange = null;
             updateAnalyticsChart();
         });
     });
@@ -155,6 +156,7 @@ function setupEventListeners() {
             analyticsState.activeTimeframe = e.target.value;
             analyticsState.currentOffset = 0; // reset navigation offset
             analyticsState.comparisonOffset = 0; // reset comparison page offset
+            analyticsState.overrideDateRange = null;
             updateAnalyticsChart();
         });
     });
@@ -166,11 +168,13 @@ function setupEventListeners() {
         prevBtn.addEventListener('click', () => {
             analyticsState.currentOffset--;
             analyticsState.comparisonOffset = 0; // reset comparison page offset
+            analyticsState.overrideDateRange = null;
             updateAnalyticsChart();
         });
         nextBtn.addEventListener('click', () => {
             analyticsState.currentOffset++;
             analyticsState.comparisonOffset = 0; // reset comparison page offset
+            analyticsState.overrideDateRange = null;
             updateAnalyticsChart();
         });
     }
@@ -207,6 +211,7 @@ function setupEventListeners() {
             }
             
             analyticsState.comparisonOffset = 0; // reset comparison page offset
+            analyticsState.overrideDateRange = null;
             updateAnalyticsChart();
             analyticsDatePicker.value = '';
         });
@@ -309,17 +314,25 @@ function setupEventListeners() {
             // Check if it's mostly a horizontal swipe and swipe distance is significant (> 40px)
             if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
                 if (diffX < 0) {
-                    // Swiped left (finger moves left -> go to future / next page)
+                    // Swiped left (finger moves left -> go to future / next page -> forward)
                     if ((analyticsState.comparisonOffset || 0) < 0) {
                         analyticsState.comparisonOffset = (analyticsState.comparisonOffset || 0) + 1;
-                        updateComparisonChart();
+                        if (document.startViewTransition) {
+                            document.startViewTransition({ update: updateComparisonChart, types: ['forward'] });
+                        } else {
+                            updateComparisonChart();
+                        }
                     } else {
                         showToast('แสดงข้อมูลล่าสุดแล้ว');
                     }
                 } else {
-                    // Swiped right (finger moves right -> go to past / previous page)
+                    // Swiped right (finger moves right -> go to past / previous page -> backward)
                     analyticsState.comparisonOffset = (analyticsState.comparisonOffset || 0) - 1;
-                    updateComparisonChart();
+                    if (document.startViewTransition) {
+                        document.startViewTransition({ update: updateComparisonChart, types: ['backward'] });
+                    } else {
+                        updateComparisonChart();
+                    }
                 }
             }
         }, { passive: true });

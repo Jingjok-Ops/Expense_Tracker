@@ -118,6 +118,13 @@ async function initApp() {
     document.documentElement.setAttribute('data-theme', state.theme || 'dark');
     updateThemeToggleIcons();
 
+    // Set header current date
+    const headerDateEl = document.getElementById('header-date');
+    if (headerDateEl) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        headerDateEl.textContent = new Date().toLocaleDateString('th-TH', options);
+    }
+
     // Default form date to today
     dateInput.value = getTodayDateString(0);
 
