@@ -26,8 +26,9 @@ const CATEGORIES = {
 let state = {
     transactions: [],
     wallets: [],
-    theme: 'dark',
-    selectedWalletId: 'all'
+    theme: 'cat',
+    selectedWalletId: 'all',
+    homeSummaryMonth: new Date().toISOString().substring(0, 7)
 };
 
 // ==========================================
@@ -47,6 +48,7 @@ const cancelEditBtn = document.getElementById('cancel-edit-btn');
 const netBalanceEl = document.getElementById('net-balance');
 const totalIncomeEl = document.getElementById('total-income');
 const totalExpenseEl = document.getElementById('total-expense');
+const homeMonthSelect = document.getElementById('home-month-select');
 
 const transactionsList = document.getElementById('transactions-list');
 
@@ -105,17 +107,17 @@ async function initApp() {
         if (savedState) {
             try {
                 const parsed = JSON.parse(savedState);
-                state.theme = parsed.theme || 'dark';
+                state.theme = parsed.theme || 'cat';
             } catch (e) {
-                state.theme = 'dark';
+                state.theme = 'cat';
             }
         } else {
-            state.theme = 'dark';
+            state.theme = 'cat';
         }
     }
     
     // Set theme on startup
-    document.documentElement.setAttribute('data-theme', state.theme || 'dark');
+    document.documentElement.setAttribute('data-theme', state.theme || 'cat');
     updateThemeToggleIcons();
 
     // Set header current date
@@ -262,6 +264,15 @@ async function initApp() {
                 state.transactions = parsed.transactions || [];
                 if (parsed.wallets && parsed.wallets.length > 0) {
                     state.wallets = parsed.wallets;
+                } else {
+                    state.wallets = [{
+                        id: 'default-wallet',
+                        name: 'กระเป๋าเงินหลัก',
+                        icon: '💼',
+                        color: '#ff8e3c',
+                        initialBalance: 0,
+                        createdAt: Date.now()
+                    }];
                 }
                 state.transactions = state.transactions.map(tx => {
                     if (!tx.walletId && tx.type !== 'transfer') {
@@ -273,6 +284,14 @@ async function initApp() {
                 console.error('Error parsing localStorage state in fallback', e);
             }
         } else {
+            state.wallets = [{
+                id: 'default-wallet',
+                name: 'กระเป๋าเงินหลัก',
+                icon: '💼',
+                color: '#ff8e3c',
+                initialBalance: 0,
+                createdAt: Date.now()
+            }];
             state.transactions = [
                 { id: 'mock-1', type: 'income', amount: 35000, category: 'salary', date: getTodayDateString(-2), note: 'เงินเดือนประจำเดือน', walletId: 'default-wallet' },
                 { id: 'mock-2', type: 'expense', amount: 1200, category: 'food', date: getTodayDateString(-1), note: 'หมูกระทะปาร์ตี้', walletId: 'default-wallet' },

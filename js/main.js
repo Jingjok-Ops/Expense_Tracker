@@ -50,6 +50,20 @@ function setupEventListeners() {
     // Theme toggler
     themeToggleBtn.addEventListener('click', toggleTheme);
 
+    // Home summary month selector
+    if (homeMonthSelect) {
+        homeMonthSelect.value = state.homeSummaryMonth;
+        homeMonthSelect.addEventListener('change', (e) => {
+            if (e.target.value) {
+                state.homeSummaryMonth = e.target.value;
+            } else {
+                state.homeSummaryMonth = new Date().toISOString().substring(0, 7);
+                homeMonthSelect.value = state.homeSummaryMonth;
+            }
+            render();
+        });
+    }
+
     // Export & Import listeners
     exportBtn.addEventListener('click', exportDataJSON);
     importBtnTrigger.addEventListener('click', () => importFileInput.click());
@@ -139,6 +153,14 @@ function setupEventListeners() {
         tabHomeBtn.addEventListener('click', () => switchTab('home'));
         tabAddBtn.addEventListener('click', () => switchTab('add'));
         tabReportsBtn.addEventListener('click', () => switchTab('reports'));
+    }
+
+    // Refresh app button (Cat logo)
+    const headerRefreshBtn = document.getElementById('header-refresh-btn');
+    if (headerRefreshBtn) {
+        headerRefreshBtn.addEventListener('click', () => {
+            window.location.reload();
+        });
     }
 
     // Analytics type toggle switch listener

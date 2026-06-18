@@ -1,35 +1,61 @@
 <!DOCTYPE html>
-<html lang="th" data-theme="dark">
+<html lang="th" data-theme="cat" style="background-color: #fffcf7;">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
     <title>FinFlow - แอพบันทึกรายรับรายจ่ายพรีเมียม</title>
+    <style>
+        /* Critical CSS to prevent black flash */
+        html, body { background-color: #fffcf7; margin: 0; padding: 0; }
+        #app-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: #fffcf7; z-index: 9999; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        @keyframes loaderBounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); }
+        }
+        @keyframes loaderPulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Sarabun:wght@300;400;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=88">
+    <!-- Load fonts asynchronously to prevent render-blocking -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Sarabun:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Sarabun:wght@300;400;600;700&display=swap"></noscript>
+    
+    <link rel="stylesheet" href="styles.css?v=102">
 
     <!-- PWA Support -->
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fffcf7">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="FinFlow">
-    <link rel="icon" href="images/rich_cat.png?v=90" type="image/png">
-    <link rel="apple-touch-icon" href="images/rich_cat.png?v=90">
+    <link rel="icon" href="images/app_icon_orange.png?v=90" type="image/png">
+    <link rel="apple-touch-icon" href="images/app_icon_orange.png?v=90">
 </head>
 
 <body>
+    <!-- App Loader -->
+    <div id="app-loader">
+        <img src="images/loader_cat.png?v=1" alt="Loading" style="width: 80px; height: 80px; object-fit: contain; animation: loaderBounce 0.6s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);">
+        <h2 style="font-family: 'Outfit', sans-serif; color: #ff8e3c; margin-top: 1rem; font-weight: 800; letter-spacing: 1.5px; font-size: 1.8rem; text-shadow: 0 0 15px rgba(255, 142, 60, 0.25);">FIN<span style="color: #5d4037;">FLOW</span></h2>
+        <p style="color: rgba(93, 64, 55, 0.65); margin-top: 0.5rem; font-family: 'Sarabun', sans-serif; animation: loaderPulse 0.8s infinite alternate;">กำลังเตรียมข้อมูล...</p>
+    </div>
     <div class="app-background-glow"></div>
 
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
-            <div class="logo-area">
-                <img src="images/face_cat.png?v=88" class="logo-cat-img" alt="Logo Cat">
+            <div class="logo-area" id="header-refresh-btn" style="cursor: pointer;">
+                <img src="images/face_cat.png?v=102" class="logo-cat-img" alt="Logo Cat">
                 <span class="logo-icon">📊</span>
                 <div class="logo-text-wrapper">
                     <h1>FIN<span>FLOW</span></h1>
@@ -85,6 +111,15 @@
                         <div class="card-footer" id="net-balance-footer">
                             <span class="trend-icon">💼</span> กระเป๋าเงินทั้งหมด
                         </div>
+                    </div>
+
+                    <!-- Month Selector for Income/Expense -->
+                    <div class="summary-month-selector glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0.8rem 1.25rem; border-radius: var(--radius-md);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.2rem;">🗓️</span>
+                            <h4 style="margin: 0; font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; color: var(--text-muted);">ประจำเดือน</h4>
+                        </div>
+                        <input type="month" id="home-month-select" class="styled-select" style="max-width: 150px; padding: 0.4rem 0.8rem; font-size: 0.9rem; border-radius: 20px; font-weight: 600; background-color: rgba(255,255,255,0.05); color: var(--text-main);">
                     </div>
 
                     <!-- Income & Expense Split -->
@@ -498,11 +533,24 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="db.js"></script>
-    <script src="js/core.js?v=89"></script>
-    <script src="js/views/home.js?v=89"></script>
-    <script src="js/views/add.js?v=89"></script>
-    <script src="js/views/reports.js?v=89"></script>
-    <script src="js/main.js?v=89"></script>
+    <script src="js/core.js?v=102"></script>
+    <script src="js/views/home.js?v=102"></script>
+    <script src="js/views/add.js?v=102"></script>
+    <script src="js/views/reports.js?v=102"></script>
+    <script src="js/main.js?v=102"></script>
+    <script>
+        // Remove the loading screen once the app is fully loaded
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('app-loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                setTimeout(() => loader.remove(), 500);
+            }
+            // Force scroll to top on page reload
+            setTimeout(() => window.scrollTo(0, 0), 10);
+        });
+    </script>
 </body>
 
 </html>

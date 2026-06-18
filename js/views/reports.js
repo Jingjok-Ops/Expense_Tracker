@@ -37,6 +37,15 @@ function switchTab(tab) {
             updateAnalyticsChart();
         }, 150);
     }
+
+    // Scroll to top with multiple fallbacks for different browsers on all tabs
+    try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+        window.scrollTo(0, 0);
+    }
+    document.body.scrollTop = 0; // For older Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
 
 function getDateRangeForTimeframe(timeframe) {
@@ -158,13 +167,13 @@ function updateAnalyticsChart() {
         // Dynamically scale font size based on character length to prevent text overflowing the inner donut hole
         const len = chartCenterValue.textContent.length;
         if (len > 14) {
-            chartCenterValue.style.fontSize = '0.74rem';
+            chartCenterValue.style.fontSize = '0.85rem';
         } else if (len > 11) {
-            chartCenterValue.style.fontSize = '0.88rem';
-        } else if (len > 8) {
             chartCenterValue.style.fontSize = '1.05rem';
+        } else if (len > 8) {
+            chartCenterValue.style.fontSize = '1.25rem';
         } else {
-            chartCenterValue.style.fontSize = ''; // use CSS default
+            chartCenterValue.style.fontSize = '1.5rem'; // use CSS default or slightly larger
         }
     }
 
@@ -255,57 +264,63 @@ function updateAnalyticsChart() {
                 borderWidth: 2,
                 hoverOffset: 6
             }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: {
-                    left: window.innerWidth <= 600 ? 35 : 45,
-                    right: window.innerWidth <= 600 ? 35 : 45,
-                    top: window.innerWidth <= 600 ? 35 : 45,
-                    bottom: window.innerWidth <= 600 ? 35 : 45
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: tooltipBg,
-                    titleColor: tooltipTextColor,
-                    bodyColor: tooltipTextColor,
-                    borderColor: tooltipBorderColor,
-                    borderWidth: 1,
-                    padding: 10,
-                    boxPadding: 4,
-                    callbacks: {
-                        label: function (context) {
-                            const val = context.raw || 0;
-                            const pct = ((val / total) * 100).toFixed(1);
-                            return ` ${formatter.format(val)} (${pct}%)`;
-                        }
-                    }
-                }
-            },
-            cutout: '66%',
-            animation: {
-                duration: 0
-            }
-        },
-        plugins: [{
-            id: 'slicePercentage',
-            afterDatasetsDraw(chart) {
-                try {
-                    const { ctx } = chart;
-                    ctx.save();
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((element, index) => {
-                            const dataVal = dataset.data[index];
-                            const totalVal = dataset.data.reduce((a, b) => a + b, 0);
-                            if (totalVal === 0) return;
-                            const percent = ((dataVal / totalVal) * 100).toFixed(1);
+         },
+         options: {
+             responsive: true,
+             maintainAspectRatio: false,
+             layout: {
+                 padding: {
+                     left: window.innerWidth <= 600 ? 40 : 45,
+                     right: window.innerWidth <= 600 ? 40 : 45,
+                     top: window.innerWidth <= 600 ? 55 : 65,
+                     bottom: window.innerWidth <= 600 ? 40 : 45
+                 }
+             },
+             plugins: {
+                 legend: {
+                     display: false
+                 },
+                 tooltip: {
+                     backgroundColor: tooltipBg,
+                     titleColor: tooltipTextColor,
+                     bodyColor: tooltipTextColor,
+                     borderColor: tooltipBorderColor,
+                     borderWidth: 1,
+                     padding: 10,
+                     boxPadding: 4,
+                     callbacks: {
+                         label: function(context) {
+                             const val = context.raw || 0;
+                             const pct = ((val / total) * 100).toFixed(1);
+                             return ` ${formatter.format(val)} (${pct}%)`;
+                         }
+                     }
+                 }
+             },
+             cutout: '66%',
+             animation: {
+                 duration: 0
+             }
+         },
+                   plugins: [{
+             id: 'slicePercentage',
+             afterDatasetsDraw(chart) {
+                 try {
+                     const { ctx } = chart;
+                     ctx.save();
+                     
+                     // Track drawn label coordinates to prevent overlapping
+                     const drawnLabels = [];
+                     
+                     chart.data.datasets.forEach((dataset, i) => {
+                         const meta = chart.getDatasetMeta(i);
+                         meta.data.forEach((element, index) => {
+                             const dataVal = dataset.data[index];
+                             const totalVal = dataset.data.reduce((a, b) => a + b, 0);
+                             if (totalVal === 0) return;
+                             const percentFloat = parseFloat(((dataVal / totalVal) * 100).toFixed(1));
+                             if (percentFloat === 0) return;
+
 
                             // Only show if the slice is large enough (> 1%)
                             if (parseFloat(percent) < 1.0) return;
@@ -314,55 +329,86 @@ function updateAnalyticsChart() {
                             const props = element.getProps(['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius'], true);
                             const { x, y, startAngle, endAngle, innerRadius, outerRadius } = props || element;
 
-                            if (x === undefined || y === undefined || startAngle === undefined || endAngle === undefined) {
-                                return;
-                            }
+                             const halfAngle = startAngle + (endAngle - startAngle) / 2;
+                             
+                             // Offset label 15px outside the outer radius initially
+                             let labelRadius = outerRadius + 15;
+                             let posX = x + Math.cos(halfAngle) * labelRadius;
+                             let posY = y + Math.sin(halfAngle) * labelRadius;
 
-                            const halfAngle = startAngle + (endAngle - startAngle) / 2;
+                             // Anti-collision logic for small slices
+                             let collision = true;
+                             let attempts = 0;
+                             while (collision && attempts < 6) {
+                                 collision = false;
+                                 for (const prev of drawnLabels) {
+                                     const distY = Math.abs(posY - prev.y);
+                                     const distX = Math.abs(posX - prev.x);
+                                     // If labels are too close, increase the radius
+                                     if (distY < 14 && distX < 30) {
+                                         collision = true;
+                                         break;
+                                     }
+                                 }
+                                 if (collision) {
+                                     labelRadius += 12; // push further out
+                                     posX = x + Math.cos(halfAngle) * labelRadius;
+                                     posY = y + Math.sin(halfAngle) * labelRadius;
+                                     attempts++;
+                                 }
+                             }
+                             
+                             drawnLabels.push({ x: posX, y: posY });
 
-                            // Offset label 15px outside the outer radius
-                            const labelRadius = outerRadius + 15;
-                            const posX = x + Math.cos(halfAngle) * labelRadius;
-                            const posY = y + Math.sin(halfAngle) * labelRadius;
+                             // Draw connecting line if the label was pushed out
+                             if (labelRadius > outerRadius + 16) {
+                                 ctx.beginPath();
+                                 ctx.moveTo(x + Math.cos(halfAngle) * (outerRadius + 2), y + Math.sin(halfAngle) * (outerRadius + 2));
+                                 ctx.lineTo(x + Math.cos(halfAngle) * (labelRadius - 10), y + Math.sin(halfAngle) * (labelRadius - 10));
+                                 ctx.strokeStyle = state.theme === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)';
+                                 ctx.lineWidth = 1;
+                                 ctx.stroke();
+                             }
 
-                            ctx.fillStyle = state.theme === 'dark' ? '#e2e8f0' : (state.theme === 'cat' ? '#5d4037' : '#2d3748');
-                            ctx.font = '600 10px Sarabun, Outfit, sans-serif';
+                             ctx.fillStyle = state.theme === 'dark' ? '#e2e8f0' : (state.theme === 'cat' ? '#5d4037' : '#2d3748');
+                             ctx.font = '600 12px Sarabun, Outfit, sans-serif';
+                             
+                             // Align text based on its position around the circle to prevent overlap
+                             const cos = Math.cos(halfAngle);
+                             if (cos > 0.3) {
+                                 ctx.textAlign = 'left';
+                             } else if (cos < -0.3) {
+                                 ctx.textAlign = 'right';
+                             } else {
+                                 ctx.textAlign = 'center';
+                             }
 
-                            // Align text based on its position around the circle to prevent overlap
-                            const cos = Math.cos(halfAngle);
-                            if (cos > 0.3) {
-                                ctx.textAlign = 'left';
-                            } else if (cos < -0.3) {
-                                ctx.textAlign = 'right';
-                            } else {
-                                ctx.textAlign = 'center';
-                            }
+                             const sin = Math.sin(halfAngle);
+                             if (sin > 0.5) {
+                                 ctx.textBaseline = 'top';
+                             } else if (sin < -0.5) {
+                                 ctx.textBaseline = 'bottom';
+                             } else {
+                                 ctx.textBaseline = 'middle';
+                             }
+                             
+                             // Disable shadow for external text for crisp readability
+                             ctx.shadowColor = 'transparent';
+                             ctx.shadowBlur = 0;
+                             ctx.shadowOffsetX = 0;
+                             ctx.shadowOffsetY = 0;
+                             
+                             ctx.fillText(`${percentFloat}%`, posX, posY);
+                         });
+                     });
+                     ctx.restore();
+                 } catch (err) {
+                     console.error("Chart plugin error:", err);
+                     showToast("❌ เกรดข้อผิดพลาด: " + err.message);
+                 }
+             }
+         }]
 
-                            const sin = Math.sin(halfAngle);
-                            if (sin > 0.5) {
-                                ctx.textBaseline = 'top';
-                            } else if (sin < -0.5) {
-                                ctx.textBaseline = 'bottom';
-                            } else {
-                                ctx.textBaseline = 'middle';
-                            }
-
-                            // Disable shadow for external text for crisp readability
-                            ctx.shadowColor = 'transparent';
-                            ctx.shadowBlur = 0;
-                            ctx.shadowOffsetX = 0;
-                            ctx.shadowOffsetY = 0;
-
-                            ctx.fillText(`${percent}%`, posX, posY);
-                        });
-                    });
-                    ctx.restore();
-                } catch (err) {
-                    console.error("Chart plugin error:", err);
-                    showToast("❌ เกรดข้อผิดพลาด: " + err.message);
-                }
-            }
-        }]
     });
 
     // Update Period Comparison Chart & Cards
@@ -705,7 +751,7 @@ function updateComparisonChart() {
                         align: 'center',
                         font: {
                             family: 'Sarabun, sans-serif',
-                            size: 9
+                            size: 11
                         }
                     }
                 },
@@ -728,7 +774,7 @@ function updateComparisonChart() {
                         textAlign: 'right',
                         font: {
                             family: 'Outfit, Sarabun, sans-serif',
-                            size: 9
+                            size: 11
                         },
                         callback: function (value) {
                             if (value === 0) return '0';
@@ -770,7 +816,8 @@ function updateComparisonChart() {
 
                 // Add a text label "เฉลี่ย: ฿ X,XXX" above the line on the right side
                 ctx.fillStyle = state.theme === 'dark' ? '#e2e8f0' : '#4a5568';
-                ctx.font = '600 12px Sarabun, Outfit, sans-serif';
+                ctx.font = '600 11px Sarabun, Outfit, sans-serif';
+
                 ctx.textAlign = 'right';
                 ctx.textBaseline = 'bottom';
                 const formattedAvg = Math.round(avgVal).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
