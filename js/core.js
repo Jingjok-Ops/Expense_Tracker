@@ -149,9 +149,9 @@ async function initApp() {
                 const isPersisted = await navigator.storage.persisted();
                 if (!isPersisted) {
                     const granted = await navigator.storage.persist();
-                    console.log(`IndexedDB Storage Persistence requested. Granted: ${granted}`);
+                    console.log(`Browser storage persistence requested. Granted: ${granted}`);
                 } else {
-                    console.log('IndexedDB Storage is already persisted.');
+                    console.log('Browser storage is already persisted.');
                 }
             } catch (err) {
                 console.warn('Persistent storage request failed:', err);
@@ -160,7 +160,7 @@ async function initApp() {
         
         // Connection success UI
         if (dbStatusText && dbStatusBadge) {
-            dbStatusText.textContent = 'เชื่อมต่อฐานข้อมูล IndexedDB สำเร็จ (ความจุสูง)';
+            dbStatusText.textContent = 'เชื่อมต่อฐานข้อมูล MySQL ผ่าน API สำเร็จ (local)';
             dbStatusBadge.style.color = 'var(--income)';
             dbStatusBadge.style.borderColor = 'rgba(0, 245, 212, 0.2)';
             dbStatusBadge.style.background = 'var(--income-glow)';
@@ -226,7 +226,7 @@ async function initApp() {
                         }
                     }
                     if (parsed.transactions && parsed.transactions.length > 0) {
-                        console.log('Migrating localStorage transactions to IndexedDB...');
+                        console.log('Migrating localStorage transactions to MySQL API...');
                         for (const tx of parsed.transactions) {
                             if (!tx.walletId && tx.type !== 'transfer') {
                                 tx.walletId = 'default-wallet';
@@ -318,7 +318,7 @@ async function setupMockData() {
             await saveTransactionDB(tx);
         }
     } catch (e) {
-        console.error('Failed to save mock data to IndexedDB', e);
+            console.error('Failed to save mock data to MySQL API', e);
     }
     state.transactions = mockData;
 }

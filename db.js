@@ -1,119 +1,91 @@
-const DB_NAME = 'FinFlowDB';
-const DB_VERSION = 1;
+const API_BASE_URL = window.FINFLOW_API_BASE_URL || '/api';
 let db = null;
 
-const initDB = () => {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
+async function fetchJson(path, options = {}) {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            ...(options.headers || {})
+        },
+        ...options
+    });
 
-        request.onerror = (event) => {
-            console.error('Database error:', event.target.error);
-            reject(event.target.error);
-        };
-
-        request.onsuccess = (event) => {
-            db = event.target.result;
-            resolve(db);
-        };
-
-        request.onupgradeneeded = (event) => {
-            const database = event.target.result;
-            
-            if (!database.objectStoreNames.contains('wallets')) {
-                database.createObjectStore('wallets', { keyPath: 'id' });
+    if (!response.ok) {
+        let errorMessage = `Request failed with status ${response.status}`;
+        try {
+            const data = await response.json();
+            if (data && data.error) {
+                errorMessage = data.error;
             }
-            
-            if (!database.objectStoreNames.contains('transactions')) {
-                database.createObjectStore('transactions', { keyPath: 'id' });
-            }
-        };
+        } catch (error) {
+            // Ignore JSON parsing errors and use the generic message.
+        }
+        throw new Error(errorMessage);
+    }
+
+    if (response.status === 204) {
+        return null;
+    }
+
+    return response.json();
+}
+
+const initDB = async () => {
+    const health = await fetchJson('/health');
+    if (!health || !health.ok) {
+        throw new Error('API health check failed');
+    }
+
+    db = {
+        type: 'mysql-api',
+        baseUrl: API_BASE_URL
+    };
+
+    return db;
+};
+
+const saveWalletDB = async (wallet) => {
+    await fetchJson('/wallets', {
+        method: 'POST',
+        body: JSON.stringify(wallet)
     });
 };
 
-const saveWalletDB = (wallet) => {
-    return new Promise((resolve, reject) => {
-        if (!db) return reject('DB not initialized');
-        const transaction = db.transaction(['wallets'], 'readwrite');
-        const store = transaction.objectStore('wallets');
-        const request = store.put(wallet);
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e.target.error);
+const getAllWalletsDB = async () => {
+    return fetchJson('/wallets');
+};
+
+const deleteWalletDB = async (id) => {
+    await fetchJson(`/wallets/${encodeURIComponent(id)}`, {
+        method: 'DELETE'
     });
 };
 
-const getAllWalletsDB = () => {
-    return new Promise((resolve, reject) => {
-        if (!db) return reject('DB not initialized');
-        const transaction = db.transaction(['wallets'], 'readonly');
-        const store = transaction.objectStore('wallets');
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = (e) => reject(e.target.error);
+const saveTransactionDB = async (tx) => {
+    await fetchJson('/transactions', {
+        method: 'POST',
+        body: JSON.stringify(tx)
     });
 };
 
-const deleteWalletDB = (id) => {
-    return new Promise((resolve, reject) => {
-        if (!db) return reject('DB not initialized');
-        const transaction = db.transaction(['wallets'], 'readwrite');
-        const store = transaction.objectStore('wallets');
-        const request = store.delete(id);
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e.target.error);
+const getAllTransactionsDB = async () => {
+    return fetchJson('/transactions');
+};
+
+const deleteTransactionDB = async (id) => {
+    await fetchJson(`/transactions/${encodeURIComponent(id)}`, {
+        method: 'DELETE'
     });
 };
 
-const saveTransactionDB = (tx) => {
-    return new Promise((resolve, reject) => {
-        if (!db) return reject('DB not initialized');
-        const transaction = db.transaction(['transactions'], 'readwrite');
-        const store = transaction.objectStore('transactions');
-        const request = store.put(tx);
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e.target.error);
+const clearAllTransactionsDB = async () => {
+    await fetchJson('/transactions', {
+        method: 'DELETE'
     });
 };
 
-const getAllTransactionsDB = () => {
-    return new Promise((resolve, reject) => {
-        if (!db) return reject('DB not initialized');
-        const transaction = db.transaction(['transactions'], 'readonly');
-        const store = transaction.objectStore('transactions');
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = (e) => reject(e.target.error);
-    });
-};
-
-const deleteTransactionDB = (id) => {
-    return new Promise((resolve, reject) => {
-        if (!db) return reject('DB not initialized');
-        const transaction = db.transaction(['transactions'], 'readwrite');
-        const store = transaction.objectStore('transactions');
-        const request = store.delete(id);
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e.target.error);
-    });
-};
-
-const clearAllTransactionsDB = () => {
-    return new Promise((resolve, reject) => {
-        if (!db) return reject('DB not initialized');
-        const transaction = db.transaction(['transactions'], 'readwrite');
-        const store = transaction.objectStore('transactions');
-        const request = store.clear();
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e.target.error);
-    });
-};
-
-const clearAllWalletsDB = () => {
-    return new Promise((resolve, reject) => {
-        if (!db) return reject('DB not initialized');
-        const transaction = db.transaction(['wallets'], 'readwrite');
-        const store = transaction.objectStore('wallets');
-        const request = store.clear();
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e.target.error);
+const clearAllWalletsDB = async () => {
+    await fetchJson('/wallets', {
+        method: 'DELETE'
     });
 };
