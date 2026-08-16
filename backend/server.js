@@ -22,7 +22,7 @@ function nowMs() {
 
 function normalizeWallet(wallet) {
   return {
-    id: wallet.id,
+    dmid: wallet.id,
     name: wallet.name,
     icon: wallet.icon || '💼',
     color: wallet.color || '#ff8e3c',
